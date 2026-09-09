@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, FileText, ArrowUpRight, Terminal, Zap } from 'lucide-react';
+import { Menu, X, FileText, ArrowUpRight, Terminal, Zap, Gamepad2 } from 'lucide-react';
 
 interface NavbarProps {
   onOpenCommand?: () => void;
@@ -159,6 +159,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommand, onOpenResume }) =
               </button>
             )}
 
+            {/* Bat Escape Arcade Button */}
+            <Link
+              href="/bat-escape"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200/90 rounded-btn transition-all duration-200 shadow-subtle-sm hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-600"
+              title="Play Bat Escape Arcade Game"
+            >
+              <Gamepad2 className="w-3.5 h-3.5 text-purple-600" />
+              <span>Bat Escape</span>
+            </Link>
+
             {/* FitPlus App Button */}
             <Link
               href="/dashboard"
@@ -192,6 +202,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCommand, onOpenResume }) =
 
           {/* Mobile Actions: Resume & Hamburger Button */}
           <div className="flex lg:hidden items-center gap-2">
+            <Link
+              href="/bat-escape"
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg"
+              title="Play Bat Escape Arcade"
+            >
+              <Gamepad2 className="w-3.5 h-3.5 text-purple-600" />
+              <span>Bat Escape</span>
+            </Link>
+
             <Link
               href="/dashboard"
               className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg"

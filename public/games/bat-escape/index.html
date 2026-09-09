@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  />
+  <title>Bat Escape — Progressive Arcade Flight</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦇</text></svg>" />
+</head>
+<body>
+
+  <div id="arcade-cabinet">
+    <!-- Game Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Retro CRT Scanline and Vignette Effects -->
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- Mobile / Quick Pause Button -->
+    <button id="mobile-pause-btn" aria-label="Pause Game">PAUSE [P]</button>
+
+    <!-- 1. Main Menu Overlay -->
+    <div id="menu-overlay" class="overlay">
+      <h1 class="game-title">🦇 BAT ESCAPE 🦇</h1>
+      <p class="game-tagline">PROGRESSIVE PIXEL-ART ARCADE FLIGHT</p>
+
+      <div class="high-score-banner">
+        BEST SCORE: <span id="menu-high-score">000000</span>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-start-game" class="btn">▶ START FLIGHT</button>
+        <button id="btn-how-to-play" class="btn btn-secondary">📖 HOW TO PLAY</button>
+        <button id="btn-achievements" class="btn btn-secondary">🏆 ACHIEVEMENTS</button>
+        <button class="btn btn-sound-toggle">🔊 SOUND: ON</button>
+      </div>
+    </div>
+
+    <!-- 2. Pause Overlay -->
+    <div id="pause-overlay" class="overlay hidden">
+      <h2 class="game-title">PAUSED</h2>
+      <p class="game-tagline">TAKE A BREATH, NIGHT FLIER</p>
+
+      <div class="btn-group">
+        <button id="btn-resume" class="btn">▶ RESUME</button>
+        <button id="btn-restart" class="btn btn-secondary">🔄 RESTART</button>
+        <button id="btn-main-menu" class="btn btn-secondary">🏠 MAIN MENU</button>
+        <button class="btn btn-sound-toggle">🔊 SOUND: ON</button>
+      </div>
+    </div>
+
+    <!-- 3. Game Over Overlay -->
+    <div id="game-over-overlay" class="overlay hidden">
+      <h2 class="game-title" style="color: #ef4444; text-shadow: 0 0 20px rgba(239, 68, 68, 0.6);">GAME OVER</h2>
+      <div id="gameover-new-high" class="new-high-badge hidden">🏆 NEW HIGH SCORE! 🏆</div>
+
+      <div class="stats-card">
+        <div class="stat-row">
+          <span class="stat-label">FINAL SCORE</span>
+          <span id="gameover-score" class="stat-value">000000</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">BEST SCORE</span>
+          <span id="gameover-best" class="stat-value" style="color: #facc15;">000000</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">LEVEL REACHED</span>
+          <span id="gameover-level" class="stat-value">1</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">OBSTACLES PASSED</span>
+          <span id="gameover-obstacles" class="stat-value">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">REWARDS COLLECTED</span>
+          <span id="gameover-rewards" class="stat-value">0</span>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-play-again" class="btn">🔄 PLAY AGAIN</button>
+        <button id="btn-gameover-menu" class="btn btn-secondary">🏠 MAIN MENU</button>
+      </div>
+    </div>
+
+    <!-- 4. How To Play Modal -->
+    <div id="how-to-play-modal" class="overlay hidden">
+      <div class="modal-box">
+        <h3 class="modal-title">📖 FLIGHT MANUAL</h3>
+
+        <div class="modal-section">
+          <h4>🎮 CONTROLS</h4>
+          <div class="controls-grid">
+            <div class="control-item">SPACEBAR<br/>(Flap)</div>
+            <div class="control-item">UP ARROW<br/>(Flap)</div>
+            <div class="control-item">MOUSE CLICK<br/>(Flap)</div>
+            <div class="control-item">MOBILE TAP<br/>(Flap)</div>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <h4>🪙 REWARDS & MULTIPLIERS</h4>
+          <p>• <b>Bat Coin</b>: +5 pts</p>
+          <p>• <b>Moon Crystal</b>: +15 pts</p>
+          <p>• <b>Golden Bat</b>: +30 pts</p>
+          <p>• <b>Blood Moon</b>: +100 pts (Rare!)</p>
+          <p>• <b>Combo Chain</b>: Chain rewards and obstacle passes for x2, x3, up to x5 multipliers!</p>
+          <p>• <b>Perfect Pass</b>: Graze obstacle edges for +10 bonus points & instant combo boost!</p>
+        </div>
+
+        <div class="modal-section">
+          <h4>🛡️ RARE POWER-UPS</h4>
+          <p>• <b>🛡️ Shadow Shield</b>: Absorbs 1 collision safely.</p>
+          <p>• <b>🧲 Moon Magnet</b>: Draws nearby coins & crystals to your bat.</p>
+          <p>• <b>⚡ Speed Burst</b>: High speed velocity boost.</p>
+          <p>• <b>🕐 Slow Time</b>: Temporarily slows obstacle scrolling.</p>
+          <p>• <b>👻 Ghost Mode</b>: Phase directly through obstacles unharmed!</p>
+        </div>
+
+        <div class="modal-section">
+          <h4>🗺️ 6 PROGRESSIVE LEVELS</h4>
+          <p>1. <b>Night Flight</b> (0–25) — Gentle training flight.</p>
+          <p>2. <b>Deep Forest</b> (25–75) — Tree branches & forest fog.</p>
+          <p>3. <b>Haunted Castle</b> (75–150) — Moving pillars & towers.</p>
+          <p>4. <b>Dark Caves</b> (150–300) — Cavern ceilings, stalactites, & spikes.</p>
+          <p>5. <b>Demon Realm</b> (300–500) — Fast fire hazards, imps, & rocks.</p>
+          <p>6. <b>Nightmare Mode</b> (500+) — Extreme chaos, speed lines, & boss events!</p>
+        </div>
+
+        <button id="btn-close-how-to" class="btn" style="width: 100%;">GOT IT, LET'S FLY!</button>
+      </div>
+    </div>
+
+    <!-- 5. Achievements Modal -->
+    <div id="achievements-modal" class="overlay hidden">
+      <div class="modal-box">
+        <h3 class="modal-title">🏆 ACHIEVEMENTS</h3>
+        <div id="achievements-container" class="achievements-grid"></div>
+        <button id="btn-close-achievements" class="btn" style="width: 100%; margin-top: 18px;">CLOSE</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="./js/game.js"></script>
+</body>
+</html>
+

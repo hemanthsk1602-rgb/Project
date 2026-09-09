@@ -520,6 +520,33 @@ export const FEATURED_PROJECTS: Project[] = [
     category: 'Web',
     badge: 'Popular Utility',
   },
+  {
+    id: 'bat-escape',
+    title: 'Bat Escape',
+    tagline: 'Challenging Progressive Pixel-Art Arcade Flight Game',
+    description:
+      'A high-octane 6-level arcade game featuring responsive flight physics, procedural fairness-guaranteed obstacle generation, combo systems, boss battles, and Web Audio chiptune synthesis.',
+    longDescription:
+      'Engineered with HTML5 Canvas and modular ES6 JavaScript targeting 60 FPS. Features a progressive difficulty manager with 6 biomes, mathematical reachability verification to prevent impossible configurations, milestone boss battles (Gargoyle and Nightmare Overlord), risk-reward pickups, power-ups, and full local achievement persistence.',
+    technologies: ['HTML5 Canvas', 'JavaScript ES6', 'Web Audio API', 'Physics Engine', 'LocalStorage', 'Next.js'],
+    features: [
+      '6 progressive difficulty tiers: Night Flight, Deep Forest, Haunted Castle, Dark Caves, Demon Realm, Nightmare Mode',
+      'Mathematical fairness validator ensuring 100% playable paths',
+      'Combo multipliers (up to 5x) and close-call "PERFECT!" pass mechanics',
+      'Milestone boss encounters with telegraphed attacks and survival awards',
+      'Object-pooled particle system and procedural Web Audio chiptune synthesizer',
+      '10 unlockable retro achievements with persistent local storage',
+    ],
+    metrics: [
+      { label: 'Levels', value: '6 Biomes' },
+      { label: 'Framerate', value: '60 FPS Target' },
+      { label: 'Audio', value: 'Procedural Web Audio' },
+    ],
+    githubUrl: 'https://github.com',
+    liveDemoUrl: '/bat-escape',
+    category: 'Web',
+    badge: 'New Arcade Game',
+  },
 ];
 
 export const TIMELINE_MILESTONES: TimelineMilestone[] = [
