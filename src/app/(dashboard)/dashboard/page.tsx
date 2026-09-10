@@ -1,349 +1,630 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
-  Flame,
+  GraduationCap,
   Dumbbell,
-  Play,
+  Wallet,
+  CalendarCheck,
+  Code2,
+  Compass,
   Sparkles,
-  Bot,
-  Utensils,
-  Footprints,
-  HeartPulse,
-  Droplet,
-  Plus,
-  ArrowRight,
-  TrendingUp,
+  ArrowUpRight,
+  CheckCircle2,
+  Circle,
   Clock,
-  Layers,
+  AlertCircle,
+  TrendingUp,
+  Zap,
+  Flame,
+  ChevronRight,
+  Play,
 } from 'lucide-react';
-import { useFitness } from '@/lib/context/FitnessContext';
-import { StatCard } from '@/components/ui/StatCard';
-import { TopHeader } from '@/components/layout/TopHeader';
-import { CircularProgress } from '@/components/ui/CircularProgress';
+import { NexusOrb } from '@/components/ui/NexusOrb';
+import {
+  SEED_TASKS,
+  SEED_SUBJECTS,
+  SEED_EXAMS,
+  SEED_ASSIGNMENTS,
+  SEED_WORKOUT,
+  SEED_FINANCE,
+  SEED_SKILLFORGE,
+  SEED_HABITS,
+  SEED_DAILY_BRIEFING,
+  SEED_TRANSIT_ROUTE,
+} from '@/lib/data/nexus-seed';
 
 export default function DashboardPage() {
-  const { profile, workoutPlan, workoutHistory, nutrition, recovery, addWater } = useFitness();
+  const [tasks, setTasks] = useState(SEED_TASKS);
+  const [habits, setHabits] = useState(SEED_HABITS);
+  const briefing = SEED_DAILY_BRIEFING;
 
-  // Find today's workout based on current day of week (Monday first)
-  const todayDayIndex = new Date().getDay(); // Sun=0, Mon=1, ...
-  const normalizedIndex = todayDayIndex === 0 ? 6 : todayDayIndex - 1;
-  const todayWorkout = workoutPlan.days[normalizedIndex] || workoutPlan.days[0];
+  const toggleTask = (id: string) => {
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === id
+          ? {
+              ...t,
+              status: t.status === 'completed' ? 'pending' : 'completed',
+              completedAt: t.status === 'completed' ? undefined : new Date().toISOString(),
+            }
+          : t
+      )
+    );
+  };
 
-  const daysLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const toggleHabit = (id: string) => {
+    setHabits((prev) =>
+      prev.map((h) =>
+        h.id === id
+          ? {
+              ...h,
+              completedToday: !h.completedToday,
+              streakCount: !h.completedToday ? h.streakCount + 1 : h.streakCount - 1,
+            }
+          : h
+      )
+    );
+  };
 
-  // Calculate percentages
-  const caloriePercent = Math.round((nutrition.caloriesConsumed / profile.calorieTarget) * 100);
-  const proteinPercent = Math.round((nutrition.proteinConsumed / profile.proteinTarget) * 100);
-  const waterPercent = Math.round((nutrition.waterLiters / profile.waterTarget) * 100);
+  const completedTasksCount = tasks.filter((t) => t.status === 'completed').length;
+  const pendingTasks = tasks.filter((t) => t.status !== 'completed');
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
-      {/* Top Header */}
-      <TopHeader
-        title={`Good morning, ${profile.name} 👋`}
-        subtitle="Let's make today count. Your body grows through consistency."
-      />
+    <div className="space-y-6 pb-12">
+      {/* 1. HERO: DAILY AI BRIEFING CARD */}
+      <div className="relative overflow-hidden rounded-card-lg p-6 md:p-8 bg-gradient-to-br from-white/90 via-violet-50/40 to-blue-50/30 dark:from-nexus-dark-card/90 dark:via-violet-950/20 dark:to-blue-950/20 border border-violet-200/60 dark:border-violet-800/40 shadow-card dark:shadow-card-dark">
+        {/* Futuristic background glow */}
+        <div className="absolute -right-16 -top-16 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -left-16 -bottom-16 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Quick Metrics Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-        {/* Calories */}
-        <StatCard
-          title="Calories"
-          value={nutrition.caloriesConsumed}
-          subvalue={`/ ${profile.calorieTarget} kcal`}
-          icon={<Utensils className="w-4 h-4" />}
-          progressPercent={caloriePercent}
-          accentColor="emerald"
-        />
-
-        {/* Protein */}
-        <StatCard
-          title="Protein"
-          value={`${nutrition.proteinConsumed}g`}
-          subvalue={`/ ${profile.proteinTarget}g`}
-          icon={<Dumbbell className="w-4 h-4" />}
-          progressPercent={proteinPercent}
-          accentColor="cyan"
-          badge={`${proteinPercent}%`}
-        />
-
-        {/* Water */}
-        <StatCard
-          title="Hydration"
-          value={`${nutrition.waterLiters}L`}
-          subvalue={`/ ${profile.waterTarget}L`}
-          icon={<Droplet className="w-4 h-4" />}
-          progressPercent={waterPercent}
-          accentColor="blue"
-          actionButton={{
-            label: '+250ml',
-            onClick: () => addWater(0.25),
-          }}
-        />
-
-        {/* Workout Status */}
-        <StatCard
-          title="Workout"
-          value={todayWorkout.isRestDay ? 'Rest Day' : 'Ready'}
-          subvalue={todayWorkout.isRestDay ? 'Active recovery' : `${todayWorkout.durationMinutes} min`}
-          icon={<Play className="w-4 h-4" />}
-          accentColor="purple"
-          badge={todayWorkout.isRestDay ? 'Recovery' : 'Scheduled'}
-        />
-
-        {/* Steps */}
-        <StatCard
-          title="Daily Steps"
-          value="8,420"
-          subvalue="/ 10k goal"
-          icon={<Footprints className="w-4 h-4" />}
-          progressPercent={84}
-          accentColor="orange"
-        />
-
-        {/* Recovery Score */}
-        <StatCard
-          title="Recovery"
-          value={`${recovery.score}`}
-          subvalue="/ 100"
-          icon={<HeartPulse className="w-4 h-4" />}
-          progressPercent={recovery.score}
-          accentColor="emerald"
-          badge="Optimal"
-        />
-      </div>
-
-      {/* Main Feature Row: Large "Today's Workout" + Current Streak / Recovery Ring */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Large "Today's Workout" Card (spans 2 cols) */}
-        <div className="lg:col-span-2 glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -z-0" />
-
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                Today's Workout
-              </span>
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <Clock className="w-3.5 h-3.5" />
-                <span>{todayWorkout.durationMinutes} Minutes</span>
+        <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex items-start gap-4 md:gap-5">
+            <NexusOrb size="lg" state="thinking" />
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs uppercase font-bold tracking-wider text-violet-600 dark:text-violet-400 bg-violet-100 dark:bg-violet-900/40 px-2 py-0.5 rounded-full">
+                  Daily Briefing & Synthesis
+                </span>
+                <span className="text-xs text-gray-400">Powered by NEXUS Core</span>
               </div>
+              <h2 className="text-xl md:text-2xl font-heading font-extrabold text-nexus-light-text dark:text-nexus-dark-text tracking-tight">
+                {briefing.greeting}
+              </h2>
+              <p className="mt-1 text-sm md:text-base text-gray-600 dark:text-gray-300 max-w-2xl">
+                {briefing.summaryText}
+              </p>
             </div>
+          </div>
 
-            <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
-              {todayWorkout.routineName}
-            </h3>
-            <p className="text-sm text-slate-400 mt-1 mb-6">
-              Focus Areas: <span className="text-slate-200 font-medium">{todayWorkout.focus}</span>
+          <Link
+            href="/ai"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-btn bg-violet-600 hover:bg-violet-700 text-white font-semibold text-sm shadow-button-primary transition-all duration-200 shrink-0"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Consult Assistant</span>
+          </Link>
+        </div>
+
+        {/* Cross-Module Intelligence Banner (Prompt Core Differentiator) */}
+        <div className="mt-6 pt-5 border-t border-violet-100 dark:border-violet-900/40 grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 p-4 rounded-xl bg-white/70 dark:bg-black/30 border border-violet-200/50 dark:border-violet-800/30">
+            <div className="flex items-center gap-2 mb-1.5 text-xs font-bold text-violet-600 dark:text-violet-300">
+              <Zap className="w-4 h-4 text-violet-500" />
+              <span>{briefing.crossModuleAction.title}</span>
+            </div>
+            <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+              "{briefing.crossModuleAction.description}"
             </p>
-
-            {/* Exercises Preview */}
-            <div className="space-y-2.5 mb-6">
-              {todayWorkout.exercises.slice(0, 4).map((ex, i) => (
-                <div
-                  key={ex.id}
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 text-xs"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="w-5 text-slate-500 font-bold">0{i + 1}</span>
-                    <div>
-                      <h5 className="font-bold text-white">{ex.name}</h5>
-                      <span className="text-[11px] text-slate-400">{ex.muscleGroup}</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-emerald-400 font-semibold">{ex.sets} Sets</span>
-                    <span className="text-slate-500 mx-1.5">•</span>
-                    <span className="text-slate-300">{ex.reps}</span>
-                  </div>
-                </div>
-              ))}
-              {todayWorkout.exercises.length > 4 && (
-                <p className="text-xs text-slate-400 text-center pt-1">
-                  + {todayWorkout.exercises.length - 4} more exercises in this session
-                </p>
-              )}
+            <div className="mt-2 flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+              <span className="font-semibold text-gray-600 dark:text-gray-300">Connected modules:</span>
+              <span className="px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-medium">Study</span>
+              <span className="px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-medium">Fitness</span>
+              <span className="px-1.5 py-0.5 rounded bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 font-medium">Finance</span>
+              <span className="px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 font-medium">SkillForge</span>
             </div>
           </div>
 
-          {/* Action Row */}
-          <div className="relative z-10 pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Personalized for {profile.trainingStyle} ({profile.experience})</span>
-            </div>
-
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <Link
-                href="/workout"
-                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors flex-1 sm:flex-none text-center"
-              >
-                View Full Routine
-              </Link>
-              <Link
-                href="/workout/session"
-                className="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-lg shadow-emerald-500/25 active:scale-95 flex items-center justify-center gap-2 flex-1 sm:flex-none"
-              >
-                <Play className="w-4 h-4 fill-black" />
-                <span>Start Workout</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Current Streak + Recovery Score Ring */}
-        <div className="space-y-6">
-          {/* Current Streak Card */}
-          <div className="glass-card p-6 rounded-3xl border border-slate-800 flex items-center justify-between">
-            <div>
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-                Current Streak
+          {/* Key Metric Pillars */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="p-3 rounded-xl bg-white/70 dark:bg-black/30 border border-gray-200/50 dark:border-gray-800/50 flex flex-col justify-between">
+              <span className="text-[11px] font-medium text-gray-500">Approaching Exams</span>
+              <span className="text-2xl font-heading font-extrabold text-blue-600 dark:text-blue-400">
+                {briefing.stats.upcomingExamsCount}
               </span>
-              <h4 className="text-3xl font-black text-white mt-1">{profile.streak} Days 🔥</h4>
-              <p className="text-xs text-amber-400/90 font-medium mt-1">
-                You're in the top 5% of consistency this month!
-              </p>
+              <span className="text-[10px] text-gray-400">DBMS in 4 days</span>
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center text-2xl shadow-inner">
-              <Flame className="w-7 h-7 fill-amber-400" />
-            </div>
-          </div>
 
-          {/* Recovery Gauge Card */}
-          <div className="glass-card p-6 rounded-3xl border border-slate-800 flex items-center gap-6">
-            <CircularProgress
-              value={recovery.score}
-              max={100}
-              size={110}
-              strokeWidth={9}
-              color="emerald"
-              label="Optimal"
-            />
-            <div className="flex-1">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-                Recovery Readiness
+            <div className="p-3 rounded-xl bg-white/70 dark:bg-black/30 border border-gray-200/50 dark:border-gray-800/50 flex flex-col justify-between">
+              <span className="text-[11px] font-medium text-gray-500">Remaining Budget</span>
+              <span className="text-2xl font-heading font-extrabold text-emerald-600 dark:text-emerald-400">
+                ₹{briefing.stats.remainingBudget}
               </span>
-              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                Sleep: <span className="text-white font-bold">{recovery.sleepHours}h {recovery.sleepMinutes}m</span> • Energy: <span className="text-emerald-400 font-bold">{recovery.energyLevel}</span>
-              </p>
-              <Link
-                href="/recovery"
-                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 mt-3 inline-flex items-center gap-1"
-              >
-                <span>Full Recovery Report</span> &rarr;
-              </Link>
+              <span className="text-[10px] text-gray-400">8 days remaining</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Second Row: Weekly Activity Chart + AI Coach Recommendation Card */}
+      {/* 2. TODAY'S FOCUS & SCHEDULE ROW */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Weekly Activity Chart (2 cols) */}
-        <div className="lg:col-span-2 glass-card p-6 sm:p-8 rounded-3xl border border-slate-800">
-          <div className="flex items-center justify-between mb-6">
+        {/* Left 2 Cols: Today's Priorities (Linear Style) */}
+        <div className="lg:col-span-2 p-6 rounded-card bg-white dark:bg-nexus-dark-card border border-nexus-light-border dark:border-nexus-dark-border shadow-card dark:shadow-card-dark">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h4 className="text-lg font-bold text-white">Weekly Activity & Training Volume</h4>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Completed vs scheduled sessions for this week
+              <h3 className="font-heading font-bold text-base md:text-lg text-nexus-light-text dark:text-nexus-dark-text">
+                Today's Focus & Priorities
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {completedTasksCount} of {tasks.length} items completed
               </p>
             </div>
-            <div className="flex items-center gap-3 text-xs">
-              <div className="flex items-center gap-1.5 text-slate-300">
-                <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500" />
-                <span>Completed</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-slate-400">
-                <span className="w-2.5 h-2.5 rounded-sm bg-slate-700" />
-                <span>Planned</span>
-              </div>
-            </div>
+            <Link
+              href="/planner"
+              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+            >
+              <span>View Planner</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
-          {/* Weekly Bar Graph */}
-          <div className="grid grid-cols-7 gap-3 sm:gap-4 h-48 items-end pt-4 pb-2 border-b border-slate-800">
-            {workoutPlan.days.map((day, idx) => {
-              const isPast = idx < normalizedIndex;
-              const isToday = idx === normalizedIndex;
-              const heightPercent = day.isRestDay ? 25 : isPast ? 85 : isToday ? 95 : 70;
-
+          <div className="space-y-2">
+            {tasks.map((task) => {
+              const isDone = task.status === 'completed';
               return (
-                <div key={day.id} className="flex flex-col items-center gap-2 h-full justify-end group">
-                  <div className="w-full max-w-[48px] bg-slate-800/60 rounded-xl p-1 flex flex-col justify-end h-full relative overflow-hidden">
-                    <div
-                      className={`w-full rounded-lg transition-all duration-500 ${
-                        day.isRestDay
-                          ? 'bg-slate-700/60'
-                          : isToday
-                          ? 'bg-gradient-to-t from-emerald-600 to-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.5)]'
-                          : isPast
-                          ? 'bg-emerald-500/80'
-                          : 'bg-slate-700/80'
-                      }`}
-                      style={{ height: `${heightPercent}%` }}
-                    />
-                  </div>
-                  <div className="text-center">
-                    <span
-                      className={`text-xs font-bold block ${
-                        isToday ? 'text-emerald-400' : 'text-slate-400'
+                <div
+                  key={task.id}
+                  onClick={() => toggleTask(task.id)}
+                  className={`group flex items-start gap-3 p-3 rounded-xl border transition-all duration-150 cursor-pointer ${
+                    isDone
+                      ? 'bg-gray-50/60 dark:bg-gray-900/30 border-gray-200/50 dark:border-gray-800/40 opacity-60'
+                      : 'bg-white dark:bg-nexus-dark-card border-gray-200/80 dark:border-gray-700/60 hover:border-blue-300 dark:hover:border-blue-700'
+                  }`}
+                >
+                  <button
+                    className="mt-0.5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+                    aria-label={isDone ? 'Mark incomplete' : 'Mark complete'}
+                  >
+                    {isDone ? (
+                      <CheckCircle2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    ) : (
+                      <Circle className="w-5 h-5" />
+                    )}
+                  </button>
+
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={`text-sm font-medium transition-colors ${
+                        isDone
+                          ? 'line-through text-gray-400 dark:text-gray-500'
+                          : 'text-gray-900 dark:text-gray-100'
                       }`}
                     >
-                      {daysLabels[idx]}
+                      {task.title}
+                    </p>
+                    {task.description && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                        {task.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span
+                      className={`text-[10px] px-2 py-0.5 rounded-full font-semibold capitalize ${
+                        task.priority === 'urgent'
+                          ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                          : task.priority === 'high'
+                          ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
+                          : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                      }`}
+                    >
+                      {task.priority}
                     </span>
-                    <span className="text-[10px] text-slate-500 block">
-                      {day.isRestDay ? 'Rest' : `${day.durationMinutes}m`}
+                    <span className="text-[11px] text-gray-400 hidden sm:inline">
+                      {task.deadline}
                     </span>
                   </div>
                 </div>
               );
             })}
           </div>
-
-          <div className="flex items-center justify-between pt-4 text-xs text-slate-400">
-            <span>Overall Weekly Adherence: <strong className="text-emerald-400">92%</strong></span>
-            <Link href="/progress" className="text-emerald-400 hover:text-emerald-300 font-semibold">
-              View Detailed Analytics &rarr;
-            </Link>
-          </div>
         </div>
 
-        {/* AI Coach Recommendation Card */}
-        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col justify-between">
+        {/* Right 1 Col: Quick Habits & Pomodoro */}
+        <div className="p-6 rounded-card bg-white dark:bg-nexus-dark-card border border-nexus-light-border dark:border-nexus-dark-border shadow-card dark:shadow-card-dark flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                <Bot className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-white">AI Coach Recommendation</h4>
-                <p className="text-[11px] text-emerald-400 font-semibold">Real-time Insight</p>
-              </div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-heading font-bold text-base md:text-lg text-nexus-light-text dark:text-nexus-dark-text">
+                Daily Habits
+              </h3>
+              <span className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1">
+                <Flame className="w-3.5 h-3.5" />
+                <span>Active Streaks</span>
+              </span>
             </div>
 
-            <blockquote className="text-xs sm:text-sm text-slate-300 italic leading-relaxed bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80 mb-4">
-              "Your pulling strength has improved this week. Consider increasing your pull-up volume slightly during your next session or testing your 5RM weighted pull-up."
-            </blockquote>
-
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Based on your recovery rating of 82/100 and yesterday's 16 sets completed, your neuromuscular adaptation is trending upward.
-            </p>
+            <div className="space-y-3">
+              {habits.map((habit) => (
+                <div
+                  key={habit.id}
+                  onClick={() => toggleHabit(habit.id)}
+                  className="flex items-center justify-between p-2.5 rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/40 cursor-pointer transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      className="text-gray-400 transition-colors"
+                      aria-label="Toggle habit"
+                    >
+                      {habit.completedToday ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      ) : (
+                        <Circle className="w-4 h-4" />
+                      )}
+                    </button>
+                    <span
+                      className={`text-xs font-medium ${
+                        habit.completedToday
+                          ? 'line-through text-gray-400'
+                          : 'text-gray-800 dark:text-gray-200'
+                      }`}
+                    >
+                      {habit.name}
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-bold text-gray-500 flex items-center gap-1">
+                    <Flame className="w-3 h-3 text-amber-500" />
+                    {habit.streakCount}d
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="pt-6 border-t border-slate-800/80">
+          {/* Quick Pomodoro Widget */}
+          <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between bg-amber-500/5 dark:bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <div>
+                <p className="text-xs font-bold text-amber-800 dark:text-amber-300">Pomodoro Focus</p>
+                <p className="text-[10px] text-amber-600 dark:text-amber-400">25m study sprint</p>
+              </div>
+            </div>
             <Link
-              href="/ai-coach"
-              className="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-md shadow-emerald-500/20 active:scale-95 flex items-center justify-center gap-2"
+              href="/planner"
+              className="p-2 rounded-btn bg-amber-600 text-white hover:bg-amber-700 transition-colors"
             >
-              <Bot className="w-4 h-4" />
-              <span>Ask AI Coach</span>
+              <Play className="w-3.5 h-3.5 fill-current" />
             </Link>
           </div>
         </div>
       </div>
+
+      {/* 3. CORE MODULE SNAPSHOTS (2x3 GRID) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Module Card 1: STUDY HUB */}
+        <Link
+          href="/study"
+          className="group p-6 rounded-card bg-white dark:bg-nexus-dark-card border border-nexus-light-border dark:border-nexus-dark-border shadow-card dark:shadow-card-dark hover:border-blue-400 dark:hover:border-blue-600 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                  <GraduationCap className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                    Study Hub
+                  </span>
+                  <h4 className="font-heading font-bold text-base text-nexus-light-text dark:text-nexus-dark-text">
+                    Academic Command
+                  </h4>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+            </div>
+
+            <div className="space-y-2 mt-4 text-xs">
+              <div className="p-2.5 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40">
+                <span className="text-[10px] font-bold uppercase text-blue-600 dark:text-blue-400">Upcoming Exam</span>
+                <p className="font-semibold text-gray-900 dark:text-gray-100 mt-0.5">
+                  {SEED_EXAMS[0].title}
+                </p>
+                <p className="text-[11px] text-gray-500 mt-0.5">Countdown: In {SEED_EXAMS[0].daysRemaining} days</p>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 text-gray-600 dark:text-gray-400">
+                <span>Pending Assignment</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  {SEED_ASSIGNMENTS[0].title.slice(0, 24)}...
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
+                <span>Avg Attendance</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">85.9%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-[11px] text-blue-600 dark:text-blue-400 font-semibold">
+            <span>Open Study Hub</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </div>
+        </Link>
+
+        {/* Module Card 2: FITNESS HUB */}
+        <Link
+          href="/fitness"
+          className="group p-6 rounded-card bg-white dark:bg-nexus-dark-card border border-nexus-light-border dark:border-nexus-dark-border shadow-card dark:shadow-card-dark hover:border-emerald-400 dark:hover:border-emerald-600 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
+                  <Dumbbell className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    Fitness Hub
+                  </span>
+                  <h4 className="font-heading font-bold text-base text-nexus-light-text dark:text-nexus-dark-text">
+                    Training & Health
+                  </h4>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
+            </div>
+
+            <div className="space-y-2 mt-4 text-xs">
+              <div className="p-2.5 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40">
+                <span className="text-[10px] font-bold uppercase text-emerald-600 dark:text-emerald-400">
+                  Today's Session
+                </span>
+                <p className="font-semibold text-gray-900 dark:text-gray-100 mt-0.5">
+                  {SEED_WORKOUT.name}
+                </p>
+                <p className="text-[11px] text-gray-500 mt-0.5">
+                  Duration: {SEED_WORKOUT.estimatedDurationMinutes} mins • {SEED_WORKOUT.exercisesCount} Exercises
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between pt-2 text-gray-600 dark:text-gray-400">
+                <span>Weekly Streak</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">4 workouts logged</span>
+              </div>
+              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
+                <span>Training Style</span>
+                <span className="font-semibold capitalize text-gray-900 dark:text-gray-100">
+                  {SEED_WORKOUT.trainingStyle}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+            <span>Log Today's Workout</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </div>
+        </Link>
+
+        {/* Module Card 3: FINANCE HUB */}
+        <Link
+          href="/finance"
+          className="group p-6 rounded-card bg-white dark:bg-nexus-dark-card border border-nexus-light-border dark:border-nexus-dark-border shadow-card dark:shadow-card-dark hover:border-green-400 dark:hover:border-green-600 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                  <Wallet className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-green-600 dark:text-green-400">
+                    Finance Hub
+                  </span>
+                  <h4 className="font-heading font-bold text-base text-nexus-light-text dark:text-nexus-dark-text">
+                    Budget & Spending
+                  </h4>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-green-500 group-hover:translate-x-1 transition-all" />
+            </div>
+
+            <div className="space-y-3 mt-4 text-xs">
+              <div className="p-2.5 rounded-lg bg-green-50/50 dark:bg-green-950/20 border border-green-100 dark:border-green-900/40">
+                <span className="text-[10px] font-bold uppercase text-green-600 dark:text-green-400">
+                  Remaining Monthly Budget
+                </span>
+                <p className="text-xl font-heading font-extrabold text-green-600 dark:text-green-400 mt-0.5">
+                  ₹{SEED_FINANCE.remainingBudget}
+                </p>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden mt-2">
+                  <div
+                    className="bg-green-500 h-full rounded-full"
+                    style={{
+                      width: `${(SEED_FINANCE.totalSpentThisMonth / SEED_FINANCE.monthlyBudget) * 100}%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
+                <span>Safe Daily Spend</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  ₹{SEED_FINANCE.dailySafeSpendingLimit} / day
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
+                <span>Top Expense</span>
+                <span className="font-semibold text-amber-600 dark:text-amber-400">
+                  {SEED_FINANCE.topCategory} (₹{SEED_FINANCE.categoryBreakdown.Food})
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-[11px] text-green-600 dark:text-green-400 font-semibold">
+            <span>Manage Budget & Expenses</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </div>
+        </Link>
+
+        {/* Module Card 4: SKILLFORGE */}
+        <Link
+          href="/skills"
+          className="group p-6 rounded-card bg-white dark:bg-nexus-dark-card border border-nexus-light-border dark:border-nexus-dark-border shadow-card dark:shadow-card-dark hover:border-indigo-400 dark:hover:border-indigo-600 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
+                  <Code2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                    SkillForge
+                  </span>
+                  <h4 className="font-heading font-bold text-base text-nexus-light-text dark:text-nexus-dark-text">
+                    Technical Career
+                  </h4>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
+            </div>
+
+            <div className="space-y-2.5 mt-4 text-xs">
+              <div className="p-2.5 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase text-indigo-600 dark:text-indigo-400">
+                    Career Readiness
+                  </span>
+                  <span className="font-heading font-extrabold text-indigo-600 dark:text-indigo-400">
+                    {SEED_SKILLFORGE.careerReadinessScore}%
+                  </span>
+                </div>
+                <p className="font-semibold text-gray-900 dark:text-gray-100 mt-1">
+                  {SEED_SKILLFORGE.activeCareerPath}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
+                <span>Active Target Skill</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100 truncate max-w-[150px]">
+                  {SEED_SKILLFORGE.currentSkill}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
+                <span>Coding Streak</span>
+                <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+                  {SEED_SKILLFORGE.activeStreak} days active
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold">
+            <span>Explore Skill Tree</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </div>
+        </Link>
+
+        {/* Module Card 5: STUDENT NAVIGATE */}
+        <Link
+          href="/navigate"
+          className="group p-6 rounded-card bg-white dark:bg-nexus-dark-card border border-nexus-light-border dark:border-nexus-dark-border shadow-card dark:shadow-card-dark hover:border-cyan-400 dark:hover:border-cyan-600 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-cyan-50 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400">
+                  <Compass className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                    Navigate
+                  </span>
+                  <h4 className="font-heading font-bold text-base text-nexus-light-text dark:text-nexus-dark-text">
+                    Campus Transit
+                  </h4>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-cyan-500 group-hover:translate-x-1 transition-all" />
+            </div>
+
+            <div className="space-y-2 mt-4 text-xs">
+              <div className="p-2.5 rounded-lg bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-100 dark:border-cyan-900/40">
+                <span className="text-[10px] font-bold uppercase text-cyan-600 dark:text-cyan-400">
+                  Saved Commute
+                </span>
+                <p className="font-semibold text-gray-900 dark:text-gray-100 mt-0.5">
+                  {SEED_TRANSIT_ROUTE.originName} → {SEED_TRANSIT_ROUTE.destinationName}
+                </p>
+                <p className="text-[11px] text-gray-500 mt-0.5">
+                  Est. {SEED_TRANSIT_ROUTE.durationMinutes} mins • Fare ₹{SEED_TRANSIT_ROUTE.estimatedFare}
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between pt-1 text-gray-600 dark:text-gray-400">
+                <span>Frequency</span>
+                <span className="font-semibold text-gray-900 dark:text-gray-100">Every 15 mins</span>
+              </div>
+              <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
+                <span>Live Status</span>
+                <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+                  Demo Provider
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-[11px] text-cyan-600 dark:text-cyan-400 font-semibold">
+            <span>Find Transit Routes</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </div>
+        </Link>
+
+        {/* Module Card 6: AI CORE */}
+        <Link
+          href="/ai"
+          className="group p-6 rounded-card bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-transparent dark:from-violet-950/40 dark:via-purple-950/20 dark:to-transparent border border-violet-300/60 dark:border-violet-700/50 shadow-card dark:shadow-card-dark hover:border-violet-500 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <NexusOrb size="sm" state="idle" />
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+                    AI Core
+                  </span>
+                  <h4 className="font-heading font-bold text-base text-nexus-light-text dark:text-nexus-dark-text">
+                    Cross-Module Brain
+                  </h4>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-violet-500 group-hover:translate-x-1 transition-all" />
+            </div>
+
+            <div className="space-y-2 mt-4 text-xs text-gray-700 dark:text-gray-300">
+              <p className="leading-relaxed">
+                Connects academic deadlines, fitness stress levels, financial burn rate, and career milestones into actionable guidance.
+              </p>
+              <div className="p-2 rounded-lg bg-violet-100/60 dark:bg-violet-900/30 border border-violet-200 dark:border-violet-800/40 text-[11px]">
+                <span className="font-bold text-violet-700 dark:text-violet-300">Suggested Action:</span>
+                <p className="text-gray-600 dark:text-gray-300 mt-0.5">
+                  "Complete 45 minutes of DSA review before your workout tonight."
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-violet-200/60 dark:border-violet-800/40 flex items-center justify-between text-[11px] text-violet-600 dark:text-violet-400 font-semibold">
+            <span>Launch AI Chat Session</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </div>
+        </Link>
+      </div>
     </div>
   );
 }
-
