@@ -1,0 +1,146 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --nexus-bg: #F7F8FA;
+    --nexus-card: #FFFFFF;
+    --nexus-border: #E5E7EB;
+    --nexus-text: #111827;
+    --nexus-secondary: #6B7280;
+    --nexus-primary: #2563EB;
+    --nexus-primary-hover: #1D4ED8;
+    --nexus-ai: #7C3AED;
+    --nexus-success: #16A34A;
+    --nexus-warning: #D97706;
+    --nexus-danger: #DC2626;
+
+    /* Module accents */
+    --module-study: #2563EB;
+    --module-fitness: #16A34A;
+    --module-finance: #059669;
+    --module-productivity: #D97706;
+    --module-skillforge: #4F46E5;
+    --module-navigate: #0891B2;
+    --module-ai: #7C3AED;
+  }
+
+  .dark {
+    --nexus-bg: #0B0F19;
+    --nexus-card: #111827;
+    --nexus-border: #1F2937;
+    --nexus-text: #F9FAFB;
+    --nexus-secondary: #9CA3AF;
+    --nexus-primary: #3B82F6;
+    --nexus-primary-hover: #2563EB;
+    --nexus-ai: #8B5CF6;
+    --nexus-success: #22C55E;
+    --nexus-warning: #F59E0B;
+    --nexus-danger: #EF4444;
+
+    /* Dark module accents */
+    --module-study: #3B82F6;
+    --module-fitness: #22C55E;
+    --module-finance: #10B981;
+    --module-productivity: #F59E0B;
+    --module-skillforge: #6366F1;
+    --module-navigate: #06B6D4;
+    --module-ai: #8B5CF6;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--nexus-bg);
+    color: var(--nexus-text);
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-plus-jakarta), var(--font-inter), system-ui, sans-serif;
+    letter-spacing: -0.025em;
+  }
+}
+
+/* Futuristic background textures */
+.bg-nexus-grid {
+  background-size: 36px 36px;
+  background-image: 
+    linear-gradient(to right, rgba(229, 231, 235, 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(229, 231, 235, 0.45) 1px, transparent 1px);
+}
+
+.dark .bg-nexus-grid {
+  background-image: 
+    linear-gradient(to right, rgba(31, 41, 55, 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 41, 55, 0.5) 1px, transparent 1px);
+}
+
+.bg-nexus-dots {
+  background-image: radial-gradient(rgba(107, 114, 128, 0.2) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.dark .bg-nexus-dots {
+  background-image: radial-gradient(rgba(156, 163, 175, 0.2) 1px, transparent 1px);
+}
+
+/* Glassmorphism utility */
+.nexus-glass {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.dark .nexus-glass {
+  background: rgba(17, 24, 39, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(31, 41, 55, 0.8);
+}
+
+/* Custom modern scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.35);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.65);
+}
+
+/* Selection */
+::selection {
+  background-color: #7C3AED;
+  color: #FFFFFF;
+}
+
+/* Accessible Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
