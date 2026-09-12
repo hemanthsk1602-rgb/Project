@@ -26,31 +26,31 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
     >
       <div className="space-y-6">
         {/* Key Attributes Bar */}
-        <div className="grid grid-cols-3 gap-3 p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
-          <div className="flex flex-col items-center justify-center text-center">
-            <span className="text-[11px] text-slate-400 font-medium">Target Sets</span>
-            <span className="text-base font-bold text-white mt-0.5">{exercise.sets} Sets</span>
+        <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-black/40 border border-white/10 text-center">
+          <div className="flex flex-col items-center justify-center">
+            <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider">Target Sets</span>
+            <span className="font-outfit text-base font-extrabold text-white mt-0.5">{exercise.sets} Sets</span>
           </div>
-          <div className="flex flex-col items-center justify-center text-center border-x border-slate-800">
-            <span className="text-[11px] text-slate-400 font-medium">Target Reps</span>
-            <span className="text-base font-bold text-emerald-400 mt-0.5">{exercise.reps}</span>
+          <div className="flex flex-col items-center justify-center border-x border-white/10">
+            <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider">Target Reps</span>
+            <span className="font-outfit text-base font-extrabold text-[#D5FF3E] mt-0.5">{exercise.reps}</span>
           </div>
-          <div className="flex flex-col items-center justify-center text-center">
-            <span className="text-[11px] text-slate-400 font-medium">Rest Period</span>
-            <span className="text-base font-bold text-cyan-400 mt-0.5">{exercise.restSeconds}s</span>
+          <div className="flex flex-col items-center justify-center">
+            <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider">Rest Period</span>
+            <span className="font-outfit text-base font-extrabold text-white mt-0.5">{exercise.restSeconds}s</span>
           </div>
         </div>
 
         {/* Target Muscles */}
         <div>
-          <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+          <h4 className="text-xs font-bold text-white/70 uppercase tracking-wider mb-2">
             Target Muscles
           </h4>
           <div className="flex flex-wrap gap-2">
             {exercise.targetMuscles.map((muscle, i) => (
               <span
                 key={i}
-                className="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold"
+                className="px-3 py-1 rounded-full bg-[#D5FF3E]/10 border border-[#D5FF3E]/20 text-[#D5FF3E] text-xs font-bold"
               >
                 {muscle}
               </span>
@@ -60,14 +60,14 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
 
         {/* Equipment Needed */}
         <div>
-          <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-            Equipment
+          <h4 className="text-xs font-bold text-white/70 uppercase tracking-wider mb-2">
+            Required Equipment
           </h4>
           <div className="flex flex-wrap gap-2">
             {exercise.equipment.map((eq, i) => (
               <span
                 key={i}
-                className="px-2.5 py-1 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-300 text-xs"
+                className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70 text-xs font-medium"
               >
                 {eq}
               </span>
@@ -77,13 +77,13 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
 
         {/* Progression Stage if calisthenics */}
         {exercise.progressionChain && (
-          <div className="p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-500/25 flex items-start gap-3">
-            <ShieldAlert className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3">
+            <ShieldAlert className="w-5 h-5 text-[#D5FF3E] shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs font-bold text-cyan-300">
+              <p className="text-xs font-bold text-white">
                 {exercise.progressionChain} (Stage {exercise.progressionOrder})
               </p>
-              <p className="text-[11px] text-slate-300 mt-0.5">
+              <p className="text-[11px] text-white/60 mt-1 leading-relaxed">
                 Master this variation with clean range-of-motion before advancing to higher lever angles or unilateral work.
               </p>
             </div>
@@ -92,14 +92,14 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
 
         {/* Form Coaching & Execution Tips */}
         <div>
-          <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2.5">
+          <h4 className="text-xs font-bold text-white/70 uppercase tracking-wider mb-2.5">
             Key Execution & Form Cues
           </h4>
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {exercise.formTips.map((tip, i) => (
-              <div key={i} className="flex items-start gap-2.5 text-xs text-slate-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>{tip}</span>
+              <div key={i} className="flex items-start gap-2.5 text-xs text-white/80 p-2.5 rounded-xl bg-white/[0.02] border border-white/5">
+                <CheckCircle2 className="w-4 h-4 text-[#D5FF3E] shrink-0 mt-0.5" />
+                <span className="leading-relaxed">{tip}</span>
               </div>
             ))}
           </div>
@@ -108,4 +108,3 @@ export const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
     </Modal>
   );
 };
-

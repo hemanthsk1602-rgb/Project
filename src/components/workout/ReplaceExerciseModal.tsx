@@ -33,12 +33,12 @@ export const ReplaceExerciseModal: React.FC<ReplaceExerciseModalProps> = ({
       maxWidth="lg"
     >
       <div className="space-y-3">
-        <p className="text-xs text-slate-400 mb-2">
-          Select an exercise matching target muscle ({currentExercise.muscleGroup}) to swap into your session:
+        <p className="text-xs text-white/60 mb-2">
+          Select an exercise matching target muscle (<strong className="text-white">{currentExercise.muscleGroup}</strong>) to swap into your session:
         </p>
 
         {alternatives.length === 0 ? (
-          <p className="text-sm text-slate-500 text-center py-6">
+          <p className="text-sm text-white/40 text-center py-6">
             No direct replacements found in this category.
           </p>
         ) : (
@@ -49,18 +49,18 @@ export const ReplaceExerciseModal: React.FC<ReplaceExerciseModalProps> = ({
                 onSelectReplacement(alt);
                 onClose();
               }}
-              className="flex items-center justify-between p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/60 transition-all cursor-pointer group"
+              className="flex items-center justify-between p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-[#D5FF3E]/50 hover:bg-white/[0.06] transition-all cursor-pointer group"
             >
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20">
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-[#D5FF3E] group-hover:scale-105 transition-transform">
                   <Dumbbell className="w-4 h-4" />
                 </div>
                 <div>
-                  <h5 className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors">
+                  <h5 className="font-outfit text-sm font-extrabold text-white group-hover:text-[#D5FF3E] transition-colors">
                     {alt.name}
                   </h5>
-                  <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400">
-                    <span className="text-emerald-400/90">{alt.style}</span>
+                  <div className="flex items-center gap-2 mt-0.5 text-xs text-white/50">
+                    <span className="text-[#D5FF3E] font-medium">{alt.style}</span>
                     <span>•</span>
                     <span>{alt.difficulty}</span>
                     <span>•</span>
@@ -69,7 +69,7 @@ export const ReplaceExerciseModal: React.FC<ReplaceExerciseModalProps> = ({
                 </div>
               </div>
 
-              <button className="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-semibold group-hover:bg-emerald-500 group-hover:text-black transition-all flex items-center gap-1">
+              <button className="px-3.5 py-1.5 rounded-full bg-[#D5FF3E]/10 text-[#D5FF3E] text-xs font-bold border border-[#D5FF3E]/30 group-hover:bg-[#D5FF3E] group-hover:text-black transition-all flex items-center gap-1.5">
                 <ArrowRightLeft className="w-3.5 h-3.5" />
                 <span>Swap</span>
               </button>
@@ -80,4 +80,3 @@ export const ReplaceExerciseModal: React.FC<ReplaceExerciseModalProps> = ({
     </Modal>
   );
 };
-

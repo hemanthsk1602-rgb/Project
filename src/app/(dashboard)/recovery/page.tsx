@@ -12,6 +12,10 @@ import {
   Calendar,
   CheckCircle2,
   Sliders,
+  BedDouble,
+  BrainCircuit,
+  Flame,
+  Gauge,
 } from 'lucide-react';
 import { useFitness } from '@/lib/context/FitnessContext';
 import { TopHeader } from '@/components/layout/TopHeader';
@@ -71,7 +75,7 @@ export default function RecoveryPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300 max-w-6xl mx-auto">
+    <div className="space-y-8 animate-in fade-in duration-300 max-w-6xl mx-auto font-outfit">
       {/* Header */}
       <TopHeader
         title="Recovery & Systemic Readiness"
@@ -79,46 +83,49 @@ export default function RecoveryPage() {
       />
 
       {/* Top Banner: Circular Recovery Gauge & AI Verdict */}
-      <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+      <div className="rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl p-6 sm:p-8 shadow-2xl shadow-black/40 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+        <div className="absolute -right-20 -top-20 w-80 h-80 bg-[#D5FF3E]/10 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="flex flex-col sm:flex-row items-center gap-7 text-center sm:text-left relative z-10">
           <CircularProgress
             value={recovery.score}
             max={100}
-            size={150}
-            strokeWidth={12}
-            color="emerald"
+            size={160}
+            strokeWidth={14}
+            color="lime"
             label="Recovery"
-            sublabel={recovery.score >= 80 ? 'Optimal' : 'Moderate'}
+            sublabel={recovery.score >= 80 ? 'Optimal' : recovery.score >= 60 ? 'Moderate' : 'Low'}
           />
           <div>
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">
-              Readiness Status
-            </span>
-            <h3 className="text-2xl sm:text-3xl font-black text-white">
-              {recovery.score >= 80 ? 'Primed for High Output' : 'Adequate Recovery'}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D5FF3E]/10 border border-[#D5FF3E]/20 text-[#D5FF3E] text-xs font-bold uppercase tracking-wider mb-2">
+              <Gauge className="w-3.5 h-3.5" />
+              <span>Readiness Status</span>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              {recovery.score >= 80 ? 'Primed for High Output' : recovery.score >= 60 ? 'Adequate Systemic Recovery' : 'Deload & Restoration Advised'}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-md leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 mt-2 max-w-lg leading-relaxed bg-white/[0.02] border border-white/5 p-3 rounded-2xl">
               "{recovery.aiRecommendation}"
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3 w-full md:w-auto">
-          <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center min-w-[90px]">
-            <span className="text-[10px] text-slate-400 font-semibold block uppercase">Sleep</span>
-            <span className="text-sm font-black text-white mt-0.5 block">
+        <div className="grid grid-cols-3 gap-3 w-full md:w-auto relative z-10">
+          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/10 text-center min-w-[100px]">
+            <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Sleep</span>
+            <span className="text-base font-black text-white mt-1 block">
               {recovery.sleepHours}h {recovery.sleepMinutes}m
             </span>
           </div>
-          <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center min-w-[90px]">
-            <span className="text-[10px] text-slate-400 font-semibold block uppercase">Energy</span>
-            <span className="text-sm font-black text-emerald-400 mt-0.5 block">
+          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/10 text-center min-w-[100px]">
+            <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Energy</span>
+            <span className="text-base font-black text-[#D5FF3E] mt-1 block">
               {recovery.energyLevel}
             </span>
           </div>
-          <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-center min-w-[90px]">
-            <span className="text-[10px] text-slate-400 font-semibold block uppercase">Soreness</span>
-            <span className="text-sm font-black text-cyan-400 mt-0.5 block">
+          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/10 text-center min-w-[100px]">
+            <span className="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Soreness</span>
+            <span className="text-base font-black text-cyan-400 mt-1 block">
               {recovery.sorenessLevel}
             </span>
           </div>
@@ -128,30 +135,38 @@ export default function RecoveryPage() {
       {/* Middle Grid: Detailed Breakdown + Interactive Logger */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recovery Metrics Deep Dive */}
-        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 space-y-5">
-          <h4 className="text-lg font-bold text-white">Biometric Indicators</h4>
+        <div className="rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl p-6 sm:p-8 space-y-5 shadow-2xl shadow-black/40">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+            <div>
+              <h4 className="text-lg font-bold text-white tracking-tight">Biometric Indicators</h4>
+              <p className="text-xs text-slate-400 mt-0.5">Real-time physiological markers & recovery trends</p>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-[#D5FF3E]/10 border border-[#D5FF3E]/20 flex items-center justify-center text-[#D5FF3E]">
+              <BrainCircuit className="w-4 h-4" />
+            </div>
+          </div>
 
           <div className="space-y-3.5">
             {/* Sleep Quality */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400">
+                <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                   <Moon className="w-5 h-5" />
                 </div>
                 <div>
                   <h5 className="text-sm font-bold text-white">Sleep Duration & Rest</h5>
-                  <span className="text-xs text-slate-400">Target: 8h 00m (7h 40m logged)</span>
+                  <span className="text-xs text-slate-400">Target: 8h 00m ({sleepHours}h {sleepMinutes}m logged)</span>
                 </div>
               </div>
-              <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                96% Target
+              <span className="text-xs font-bold text-[#D5FF3E] bg-[#D5FF3E]/10 px-3 py-1 rounded-full border border-[#D5FF3E]/20">
+                {Math.min(100, Math.round(((sleepHours + sleepMinutes / 60) / 8) * 100))}% Target
               </span>
             </div>
 
             {/* HRV */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400">
+                <div className="p-2.5 rounded-xl bg-[#D5FF3E]/10 text-[#D5FF3E] border border-[#D5FF3E]/20">
                   <Activity className="w-5 h-5" />
                 </div>
                 <div>
@@ -159,41 +174,41 @@ export default function RecoveryPage() {
                   <span className="text-xs text-slate-400">68 ms (Baseline: 62-72 ms)</span>
                 </div>
               </div>
-              <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+              <span className="text-xs font-bold text-[#D5FF3E] bg-[#D5FF3E]/10 px-3 py-1 rounded-full border border-[#D5FF3E]/20">
                 Optimal
               </span>
             </div>
 
             {/* Muscle Soreness Areas */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-orange-500/10 text-orange-400">
+                <div className="p-2.5 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20">
                   <HeartPulse className="w-5 h-5" />
                 </div>
                 <div>
-                  <h5 className="text-sm font-bold text-white">Reported Muscle Soreness</h5>
+                  <h5 className="text-sm font-bold text-white">Reported Soreness Areas</h5>
                   <span className="text-xs text-slate-400">
-                    {recovery.sorenessAreas.join(', ')}
+                    {recovery.sorenessAreas.length > 0 ? recovery.sorenessAreas.join(', ') : 'None reported'}
                   </span>
                 </div>
               </div>
-              <span className="text-xs font-bold text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-full border border-cyan-500/20">
-                Mild
+              <span className="text-xs font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
+                {recovery.sorenessLevel}
               </span>
             </div>
 
             {/* Rest Days This Week */}
-            <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400">
+                <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
                   <Calendar className="w-5 h-5" />
                 </div>
                 <div>
                   <h5 className="text-sm font-bold text-white">Rest Days Taken This Week</h5>
-                  <span className="text-xs text-slate-400">Active recovery and mobility</span>
+                  <span className="text-xs text-slate-400">Scheduled active recovery & mobility</span>
                 </div>
               </div>
-              <span className="text-xs font-bold text-white bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">
+              <span className="text-xs font-bold text-white bg-white/10 px-3 py-1 rounded-full border border-white/10">
                 {recovery.restDaysThisWeek} Days
               </span>
             </div>
@@ -201,24 +216,31 @@ export default function RecoveryPage() {
         </div>
 
         {/* Interactive Recovery Logger */}
-        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-6">
+        <div className="rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-2xl shadow-black/40">
           <div>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-5">
               <div>
-                <h4 className="text-lg font-bold text-white">Log Today's Recovery</h4>
+                <h4 className="text-lg font-bold text-white tracking-tight">Log Today's Recovery</h4>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Update your daily sleep and subjective fatigue to adapt routines
                 </p>
               </div>
-              <Sliders className="w-5 h-5 text-emerald-400" />
+              <div className="w-8 h-8 rounded-full bg-[#D5FF3E]/10 border border-[#D5FF3E]/20 flex items-center justify-center text-[#D5FF3E]">
+                <Sliders className="w-4 h-4" />
+              </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               {/* Sleep Hours & Mins */}
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                  Last Night's Sleep: {sleepHours}h {sleepMinutes}m
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                    Last Night's Sleep
+                  </label>
+                  <span className="text-xs font-bold text-[#D5FF3E] font-mono bg-[#D5FF3E]/10 px-2 py-0.5 rounded-md border border-[#D5FF3E]/20">
+                    {sleepHours}h {sleepMinutes}m
+                  </span>
+                </div>
                 <div className="flex items-center gap-3">
                   <input
                     type="range"
@@ -227,7 +249,7 @@ export default function RecoveryPage() {
                     step="1"
                     value={sleepHours}
                     onChange={(e) => setSleepHours(Number(e.target.value))}
-                    className="flex-1 accent-emerald-500"
+                    className="flex-1 accent-[#D5FF3E] h-2 bg-white/10 rounded-lg cursor-pointer"
                   />
                   <span className="text-xs text-slate-400 font-mono w-14 text-right">
                     {sleepHours} hrs
@@ -246,10 +268,10 @@ export default function RecoveryPage() {
                       key={lvl}
                       type="button"
                       onClick={() => setEnergyLevel(lvl)}
-                      className={`py-2 rounded-xl text-xs font-bold transition-all border ${
+                      className={`py-2.5 rounded-2xl text-xs font-bold transition-all border ${
                         energyLevel === lvl
-                          ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400'
-                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
+                          ? 'bg-[#D5FF3E] border-[#D5FF3E] text-black shadow-[0_0_15px_rgba(213,255,62,0.3)]'
+                          : 'bg-white/[0.02] border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.05]'
                       }`}
                     >
                       {lvl}
@@ -269,10 +291,10 @@ export default function RecoveryPage() {
                       key={s}
                       type="button"
                       onClick={() => setSorenessLevel(s)}
-                      className={`py-2 rounded-xl text-xs font-bold transition-all border ${
+                      className={`py-2.5 rounded-2xl text-xs font-bold transition-all border ${
                         sorenessLevel === s
-                          ? 'bg-cyan-500/15 border-cyan-500 text-cyan-400'
-                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
+                          ? 'bg-cyan-400 border-cyan-400 text-black shadow-[0_0_15px_rgba(34,211,238,0.3)]'
+                          : 'bg-white/[0.02] border-white/10 text-slate-400 hover:text-white hover:bg-white/[0.05]'
                       }`}
                     >
                       {s}
@@ -283,10 +305,10 @@ export default function RecoveryPage() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+          <div className="pt-4 border-t border-white/10 flex items-center justify-between">
             {saveToast && (
-              <span className="text-xs text-emerald-400 font-semibold animate-in fade-in flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Recovery metrics updated!
+              <span className="text-xs text-[#D5FF3E] font-bold animate-in fade-in flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4" /> Recovery metrics updated!
               </span>
             )}
             <Button

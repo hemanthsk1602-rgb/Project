@@ -14,6 +14,7 @@ import {
   ArrowRight,
   CheckCircle2,
   AlertCircle,
+  Zap,
 } from 'lucide-react';
 import { useFitness } from '@/lib/context/FitnessContext';
 import { TopHeader } from '@/components/layout/TopHeader';
@@ -42,10 +43,10 @@ export default function NutritionPage() {
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* Top Header */}
       <TopHeader
-        title="Nutrition & Fuel Dashboard"
+        title="Nutrition & Precision Fueling"
         subtitle={`Tracking calories, macros, and hydration to maximize recovery for ${profile.name}`}
         actionButton={{
-          label: '+ Add Food',
+          label: '+ Log Food',
           href: '#meals',
           icon: <Plus className="w-4 h-4" />,
         }}
@@ -54,8 +55,8 @@ export default function NutritionPage() {
       {/* Main Nutrition Overview: Calories Gauge & Macros Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Calorie Ring Card */}
-        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col items-center justify-center text-center">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">
+        <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/20 backdrop-blur-xl flex flex-col items-center justify-center text-center transition-all">
+          <span className="text-[11px] font-bold text-white/50 uppercase tracking-wider mb-4">
             Daily Energy Balance
           </span>
           <CircularProgress
@@ -63,20 +64,20 @@ export default function NutritionPage() {
             max={profile.calorieTarget}
             size={160}
             strokeWidth={12}
-            color="emerald"
+            color="lime"
             label="Kcal Consumed"
           />
-          <div className="mt-4 pt-4 border-t border-slate-800/80 w-full flex items-center justify-around text-xs">
+          <div className="mt-4 pt-4 border-t border-white/10 w-full flex items-center justify-around text-xs">
             <div>
-              <span className="text-slate-400 block">Remaining</span>
-              <span className="text-base font-bold text-white">
+              <span className="text-white/40 block font-medium">Remaining</span>
+              <span className="font-outfit text-base font-extrabold text-white">
                 {Math.max(0, profile.calorieTarget - nutrition.caloriesConsumed)} kcal
               </span>
             </div>
-            <div className="border-r border-slate-800 h-8" />
+            <div className="border-r border-white/10 h-8" />
             <div>
-              <span className="text-slate-400 block">Target</span>
-              <span className="text-base font-bold text-emerald-400">
+              <span className="text-white/40 block font-medium">Goal Target</span>
+              <span className="font-outfit text-base font-extrabold text-[#D5FF3E]">
                 {profile.calorieTarget} kcal
               </span>
             </div>
@@ -84,11 +85,11 @@ export default function NutritionPage() {
         </div>
 
         {/* Middle: Macro Progress Bars */}
-        <div className="lg:col-span-2 glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-5">
+        <div className="lg:col-span-2 p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/20 backdrop-blur-xl flex flex-col justify-between space-y-6 transition-all">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-lg font-bold text-white">Macronutrient Targets</h4>
-              <span className="text-xs font-semibold text-slate-400">
+              <h4 className="font-outfit text-lg font-bold text-white">Macronutrient Targets</h4>
+              <span className="text-xs font-semibold text-white/50">
                 Calibrated for {profile.goal}
               </span>
             </div>
@@ -97,18 +98,18 @@ export default function NutritionPage() {
               {/* Protein */}
               <div>
                 <div className="flex items-center justify-between text-xs mb-1 font-semibold">
-                  <span className="text-emerald-400 flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-                    Protein Target
+                  <span className="text-[#D5FF3E] flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#D5FF3E]" />
+                    Protein Target (Muscle Synthesis)
                   </span>
-                  <span className="text-white">
+                  <span className="text-white font-mono">
                     {nutrition.proteinConsumed}g / {profile.proteinTarget}g ({proteinPercent}%)
                   </span>
                 </div>
                 <ProgressBar
                   value={nutrition.proteinConsumed}
                   max={profile.proteinTarget}
-                  color="emerald"
+                  color="lime"
                   height="md"
                 />
               </div>
@@ -118,9 +119,9 @@ export default function NutritionPage() {
                 <div className="flex items-center justify-between text-xs mb-1 font-semibold">
                   <span className="text-cyan-400 flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
-                    Carbohydrates
+                    Complex Carbohydrates (Glycogen)
                   </span>
-                  <span className="text-white">
+                  <span className="text-white font-mono">
                     {nutrition.carbsConsumed}g / {profile.carbsTarget}g ({carbsPercent}%)
                   </span>
                 </div>
@@ -137,9 +138,9 @@ export default function NutritionPage() {
                 <div className="flex items-center justify-between text-xs mb-1 font-semibold">
                   <span className="text-amber-400 flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                    Healthy Fats
+                    Healthy Fats (Hormone Support)
                   </span>
-                  <span className="text-white">
+                  <span className="text-white font-mono">
                     {nutrition.fatConsumed}g / {profile.fatTarget}g ({fatPercent}%)
                   </span>
                 </div>
@@ -153,92 +154,136 @@ export default function NutritionPage() {
             </div>
           </div>
 
-          {/* Water Quick Tracker */}
-          <div className="pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <Droplet className="w-5 h-5 text-blue-400" />
-              <div>
-                <span className="text-xs font-bold text-white block">
-                  Hydration: {nutrition.waterLiters} / {profile.waterTarget} Liters ({waterPercent}%)
-                </span>
-                <span className="text-[11px] text-slate-400">
-                  Vital for muscular endurance and cellular recovery
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => addWater(0.25)}
-                className="px-3 py-1.5 rounded-xl bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 border border-blue-500/30 text-xs font-bold transition-colors"
-              >
-                +250ml
-              </button>
-              <button
-                onClick={() => addWater(0.5)}
-                className="px-3 py-1.5 rounded-xl bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 border border-blue-500/30 text-xs font-bold transition-colors"
-              >
-                +500ml
-              </button>
-            </div>
+          {/* Quick macro distribution pill */}
+          <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-white/50">
+            <span>
+              Ratio: <strong className="text-white">35% P</strong> • <strong className="text-white">45% C</strong> • <strong className="text-white">20% F</strong>
+            </span>
+            <span className="text-[#D5FF3E] font-semibold">Clean Whole Food Fuel</span>
           </div>
         </div>
       </div>
 
-      {/* AI Nutrition Assistant Card */}
-      <div className="glass-card p-6 sm:p-8 rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/20 via-slate-900 to-slate-900 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/40">
-            <Bot className="w-6 h-6" />
-          </div>
+      {/* Second Row: Hydration Module + AI Nutritionist Advice */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Hydration Tracker */}
+        <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/20 backdrop-blur-xl flex flex-col justify-between space-y-4 transition-all">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                FitPlus AI Nutritionist
-              </span>
-              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">
-                Live Analysis
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2.5 rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <Droplet className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-outfit text-base font-bold text-white">Daily Hydration</h4>
+                  <p className="text-xs text-white/50">{nutrition.waterLiters}L / {profile.waterTarget}L goal</p>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-blue-400 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20">
+                {waterPercent}%
               </span>
             </div>
-            <p className="text-sm text-slate-200 font-medium leading-relaxed">
-              "{advice.message}"
+
+            <ProgressBar
+              value={nutrition.waterLiters}
+              max={profile.waterTarget}
+              color="blue"
+              height="md"
+            />
+          </div>
+
+          <div className="pt-3 border-t border-white/10 flex items-center gap-2">
+            <button
+              onClick={() => addWater(0.25)}
+              className="flex-1 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white text-xs font-bold border border-white/10 transition-colors flex items-center justify-center gap-1.5 active:scale-95"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>+250 ml</span>
+            </button>
+            <button
+              onClick={() => addWater(0.5)}
+              className="flex-1 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white text-xs font-bold border border-white/10 transition-colors flex items-center justify-center gap-1.5 active:scale-95"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>+500 ml</span>
+            </button>
+          </div>
+        </div>
+
+        {/* AI Nutritionist Assistant Card (spans 2 cols) */}
+        <div className="lg:col-span-2 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/10 hover:border-[#D5FF3E]/30 backdrop-blur-xl flex flex-col justify-between space-y-4 transition-all">
+          <div>
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#D5FF3E] to-emerald-400 flex items-center justify-center text-black shadow-lg shadow-[#D5FF3E]/20">
+                  <Bot className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-outfit text-sm font-bold text-white flex items-center gap-1.5">
+                    <span>FitPlus AI Nutritionist</span>
+                    <Sparkles className="w-3.5 h-3.5 text-[#D5FF3E]" />
+                  </h4>
+                  <p className="text-[11px] text-white/50">Adaptive Macro Guidance</p>
+                </div>
+              </div>
+
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                advice.proteinGap > 0
+                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                  : 'bg-[#D5FF3E]/10 text-[#D5FF3E] border border-[#D5FF3E]/20'
+              }`}>
+                {advice.proteinGap > 0 ? `${advice.proteinGap}g Protein Needed` : 'Target Achieved'}
+              </span>
+            </div>
+
+            <p className="text-xs text-white/80 leading-relaxed">
+              {advice.message}
             </p>
 
-            {/* Suggested High-Protein Foods */}
-            {advice.proteinGap > 0 && (
-              <div className="flex flex-wrap items-center gap-2 mt-3">
-                <span className="text-xs text-slate-400 font-semibold">Recommended to bridge gap:</span>
-                {advice.recommendedFoods.map((food) => (
-                  <button
-                    key={food.id}
-                    onClick={() => {
-                      addFoodToMeal('dinner', food, 100);
-                    }}
-                    className="px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-300 border border-slate-700/80 text-xs font-medium transition-colors flex items-center gap-1"
-                  >
-                    <span>+ {food.name}</span>
-                    <span className="text-[10px] text-emerald-400 font-bold">({food.protein}g P)</span>
-                  </button>
-                ))}
+            {advice.recommendedFoods.length > 0 && (
+              <div className="mt-3">
+                <span className="text-[10px] font-bold text-[#D5FF3E] uppercase tracking-wider block mb-1.5">
+                  Suggested Targeted Foods:
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {advice.recommendedFoods.map((food) => (
+                    <span
+                      key={food.id}
+                      className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/90 text-xs font-semibold"
+                    >
+                      {food.name}
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
           </div>
-        </div>
 
-        <Link
-          href="/ai-coach"
-          className="shrink-0 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-md shadow-emerald-500/25 active:scale-95 flex items-center justify-center gap-2 self-end md:self-center"
-        >
-          <Bot className="w-4 h-4" />
-          <span>Ask AI Coach</span>
-        </Link>
+          <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs">
+            <span className="text-white/40">Caloric Surplus/Deficit: {profile.goal}</span>
+            <Link
+              href="/ai-coach"
+              className="text-[#D5FF3E] hover:text-[#c4f035] font-bold flex items-center gap-1 transition-colors"
+            >
+              <span>Ask Coach about Meal Prep</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
       </div>
 
-      {/* Meal Sections */}
+      {/* Meals Logging Grid */}
       <div id="meals" className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-white">Daily Meals Breakdown</h3>
-          <span className="text-xs text-slate-400">Tap "+ Add Food" on any meal category</span>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#D5FF3E] animate-pulse" />
+            <h3 className="font-outfit text-base font-extrabold text-white uppercase tracking-wider">
+              Logged Daily Meals
+            </h3>
+          </div>
+          <span className="text-xs text-white/50">
+            Database of 500+ Indian & Global fitness foods
+          </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -264,7 +309,7 @@ export default function NutritionPage() {
             onRemoveFood={removeFoodFromMeal}
           />
           <MealSection
-            title="Snacks & Post-Workout"
+            title="Snacks & Supplements"
             mealType="snacks"
             items={nutrition.meals.snacks}
             onOpenAddModal={setActiveModalMeal}
@@ -273,16 +318,15 @@ export default function NutritionPage() {
         </div>
       </div>
 
-      {/* Add Food Modal */}
+      {/* Food Search Modal */}
       {activeModalMeal && (
         <FoodSearchModal
           isOpen={true}
-          mealType={activeModalMeal}
           onClose={() => setActiveModalMeal(null)}
+          mealType={activeModalMeal}
           onAddFood={addFoodToMeal}
         />
       )}
     </div>
   );
 }
-

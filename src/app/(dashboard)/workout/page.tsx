@@ -15,6 +15,10 @@ import {
   CheckCircle2,
   RefreshCw,
   Sparkles,
+  Zap,
+  ArrowRight,
+  Shield,
+  Activity,
 } from 'lucide-react';
 import { useFitness } from '@/lib/context/FitnessContext';
 import { TopHeader } from '@/components/layout/TopHeader';
@@ -27,14 +31,26 @@ export default function WorkoutPage() {
   const [activeTab, setActiveTab] = useState<'today' | 'weekly' | 'exercises' | 'history'>('today');
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [selectedMuscleFilter, setSelectedMuscleFilter] = useState<string>('All');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Identify current day's routine
   const todayDayIndex = new Date().getDay();
   const normalizedIndex = todayDayIndex === 0 ? 6 : todayDayIndex - 1;
   const todayWorkout = workoutPlan.days[normalizedIndex] || workoutPlan.days[0];
 
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
   const handleStyleChange = (newStyle: TrainingStyle) => {
     updateTrainingStyle(newStyle);
+    showToast(`Switched discipline to ${newStyle}! Routine regenerated.`);
+  };
+
+  const handleRegenerate = () => {
+    regeneratePlan();
+    showToast('Plan regenerated with fresh exercise variations!');
   };
 
   const muscleFilters = ['All', 'Chest', 'Back', 'Shoulders', 'Biceps', 'Triceps', 'Legs', 'Skill', 'Core'];
@@ -51,74 +67,133 @@ export default function WorkoutPage() {
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* Header */}
       <TopHeader
-        title="Training & Routines"
-        subtitle={`Personalized for ${profile.name} • ${profile.goal}`}
+        title="Training & Workout Programs"
+        subtitle={`Customized split for ${profile.name} • ${profile.goal} (${profile.experience} Tier)`}
         actionButton={{
-          label: 'Start Today\'s Session',
+          label: "Start Today's Session",
           href: '/workout/session',
           icon: <Play className="w-4 h-4 fill-black" />,
         }}
       />
 
-      {/* Top Banner: Training Style Switcher */}
-      <div className="glass-card p-6 rounded-3xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">
-            Active Training Discipline
-          </span>
-          <h3 className="text-xl sm:text-2xl font-black text-white">
-            {profile.trainingStyle === 'Gym' && '🏋️ Gym Weightlifting'}
-            {profile.trainingStyle === 'Calisthenics' && '🤸 Calisthenics Bodyweight Mastery'}
-            {profile.trainingStyle === 'Hybrid' && '🔀 Hybrid Strength & Skill Split'}
-          </h3>
-          <p className="text-xs text-slate-400 mt-1">
-            Switch style anytime. FitPlus instantly rebuilds your routines and progression trees.
-          </p>
+      {/* Toast Alert */}
+      {toastMessage && (
+        <div className="p-4 rounded-2xl bg-[#D5FF3E]/10 border border-[#D5FF3E]/30 text-[#D5FF3E] text-xs font-bold flex items-center gap-2 animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* 1. TRAINING DISCIPLINE SELECTOR (Gym vs Calisthenics vs Hybrid) */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#D5FF3E] animate-pulse" />
+            <h2 className="font-outfit text-sm font-extrabold uppercase tracking-wider text-white">
+              Select Discipline
+            </h2>
+          </div>
+          <button
+            onClick={handleRegenerate}
+            className="text-xs font-bold text-white/60 hover:text-white flex items-center gap-1.5 transition-colors"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-[#D5FF3E]" />
+            <span>Regenerate Routine Variations</span>
+          </button>
         </div>
 
-        {/* 3-way Style Switcher */}
-        <div className="flex items-center gap-1.5 p-1.5 bg-slate-900/90 rounded-2xl border border-slate-800 self-start md:self-center">
-          <button
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Gym Card */}
+          <div
             onClick={() => handleStyleChange('Gym')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            className={`p-6 rounded-3xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
               profile.trainingStyle === 'Gym'
-                ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/25'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-white/[0.06] border-[#D5FF3E] shadow-xl shadow-[#D5FF3E]/10'
+                : 'bg-white/[0.02] border-white/10 hover:border-white/20 hover:bg-white/[0.04]'
             }`}
           >
-            <span>🏋️</span>
-            <span>Gym</span>
-          </button>
-          <button
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-3xl">🏋️</span>
+                {profile.trainingStyle === 'Gym' && (
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#D5FF3E] text-black">
+                    Active Discipline
+                  </span>
+                )}
+              </div>
+              <h3 className="font-outfit text-lg font-bold text-white">Gym Weightlifting</h3>
+              <p className="text-xs text-white/60 mt-1 leading-relaxed">
+                Strength training • Equipment-based workouts • Progressive overload with barbell compound lifts and isolation hypertrophy.
+              </p>
+            </div>
+            <div className="pt-4 mt-4 border-t border-white/10 flex items-center gap-2 text-[11px] text-white/50">
+              <span className="text-[#D5FF3E] font-semibold">Barbell • Dumbbells • Machines</span>
+            </div>
+          </div>
+
+          {/* Calisthenics Card */}
+          <div
             onClick={() => handleStyleChange('Calisthenics')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            className={`p-6 rounded-3xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
               profile.trainingStyle === 'Calisthenics'
-                ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/25'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-white/[0.06] border-[#D5FF3E] shadow-xl shadow-[#D5FF3E]/10'
+                : 'bg-white/[0.02] border-white/10 hover:border-white/20 hover:bg-white/[0.04]'
             }`}
           >
-            <span>🤸</span>
-            <span>Calisthenics</span>
-          </button>
-          <button
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-3xl">🤸</span>
+                {profile.trainingStyle === 'Calisthenics' && (
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#D5FF3E] text-black">
+                    Active Discipline
+                  </span>
+                )}
+              </div>
+              <h3 className="font-outfit text-lg font-bold text-white">Calisthenics Mastery</h3>
+              <p className="text-xs text-white/60 mt-1 leading-relaxed">
+                Bodyweight training • Skill development • Progressive movements from clean pull-ups to front levers and handstand push-ups.
+              </p>
+            </div>
+            <div className="pt-4 mt-4 border-t border-white/10 flex items-center gap-2 text-[11px] text-white/50">
+              <span className="text-[#D5FF3E] font-semibold">Bars • Rings • Bodyweight Skills</span>
+            </div>
+          </div>
+
+          {/* Hybrid Card */}
+          <div
             onClick={() => handleStyleChange('Hybrid')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            className={`p-6 rounded-3xl border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
               profile.trainingStyle === 'Hybrid'
-                ? 'bg-amber-500 text-black shadow-md shadow-amber-500/25'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-white/[0.06] border-[#D5FF3E] shadow-xl shadow-[#D5FF3E]/10'
+                : 'bg-white/[0.02] border-white/10 hover:border-white/20 hover:bg-white/[0.04]'
             }`}
           >
-            <span>🔀</span>
-            <span>Hybrid</span>
-          </button>
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-3xl">🔀</span>
+                {profile.trainingStyle === 'Hybrid' && (
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#D5FF3E] text-black">
+                    Active Discipline
+                  </span>
+                )}
+              </div>
+              <h3 className="font-outfit text-lg font-bold text-white">Hybrid Split</h3>
+              <p className="text-xs text-white/60 mt-1 leading-relaxed">
+                The ultimate athletic balance. Combine raw gym compound powerlifting with gymnastic relative strength and athletic mobility.
+              </p>
+            </div>
+            <div className="pt-4 mt-4 border-t border-white/10 flex items-center gap-2 text-[11px] text-white/50">
+              <span className="text-[#D5FF3E] font-semibold">Dual Modality Overload</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Tabs Switcher */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto">
+      {/* Tabs Navigation */}
+      <div className="flex items-center gap-2 border-b border-white/10 pb-2 overflow-x-auto">
         {[
           { id: 'today', label: "Today's Workout", icon: Play },
-          { id: 'weekly', label: 'Weekly Plan', icon: Calendar },
+          { id: 'weekly', label: '7-Day Microcycle Split', icon: Calendar },
           { id: 'exercises', label: 'Exercise Library', icon: Dumbbell },
           { id: 'history', label: 'Workout History', icon: History },
         ].map((tab) => {
@@ -128,10 +203,10 @@ export default function WorkoutPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
                 isActive
-                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  ? 'bg-[#D5FF3E] text-black shadow-lg shadow-[#D5FF3E]/20'
+                  : 'text-white/60 hover:text-white hover:bg-white/5'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -147,43 +222,43 @@ export default function WorkoutPage() {
           {/* Today Overview Card */}
           {todayWorkout.isRestDay ? (
             <div className="space-y-6">
-              <div className="glass-card p-6 sm:p-8 rounded-3xl border border-cyan-500/30 bg-gradient-to-r from-cyan-950/20 to-slate-900 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div>
-                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 text-[11px] font-bold border border-cyan-500/30 uppercase">
+                  <span className="px-3 py-1 rounded-full bg-white/10 text-white text-[11px] font-bold border border-white/15 uppercase">
                     Scheduled Rest & Recovery Day
                   </span>
-                  <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mt-2">
+                  <h3 className="font-outfit text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-tight mt-3">
                     {todayWorkout.routineName}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-300 mt-1">
-                    Muscles grow during recovery! Focus on hydration, mobility, and hitting {profile.proteinTarget}g protein.
+                  <p className="text-xs sm:text-sm text-white/60 mt-1 leading-relaxed">
+                    Muscles grow during recovery. Focus on hydration, mobility stretching, and hitting your {profile.proteinTarget}g protein target.
                   </p>
                 </div>
                 <Link
                   href="/recovery"
-                  className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition-all shrink-0"
+                  className="px-6 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-bold border border-white/20 transition-all shrink-0"
                 >
-                  View Recovery Status
+                  View Recovery Report
                 </Link>
               </div>
 
-              {/* Upcoming Training Routine preview so user always has exercises */}
+              {/* Upcoming Training Routine preview so user can always inspect & train */}
               {(() => {
                 const nextTrainingDay = workoutPlan.days.find((d) => !d.isRestDay) || workoutPlan.days[0];
                 return (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                          Upcoming Session
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#D5FF3E]">
+                          Next Scheduled Session
                         </span>
-                        <h4 className="text-lg font-bold text-white mt-0.5">
+                        <h4 className="font-outfit text-lg font-bold text-white mt-0.5">
                           {nextTrainingDay.routineName} ({nextTrainingDay.focus})
                         </h4>
                       </div>
                       <Link
                         href="/workout/session"
-                        className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-md shadow-emerald-500/20 active:scale-95 flex items-center gap-1.5"
+                        className="px-6 py-2.5 rounded-full bg-[#D5FF3E] hover:bg-[#c4f035] text-black text-xs font-extrabold transition-all shadow-md shadow-[#D5FF3E]/20 active:scale-95 flex items-center gap-2"
                       >
                         <Play className="w-3.5 h-3.5 fill-black" />
                         <span>Start This Routine</span>
@@ -200,113 +275,106 @@ export default function WorkoutPage() {
               })()}
             </div>
           ) : (
-            <>
-              <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                <div>
+            <div className="space-y-6">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="absolute top-0 right-0 w-80 h-80 bg-[#D5FF3E]/5 rounded-full blur-3xl pointer-events-none -z-0" />
+
+                <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[11px] font-bold border border-emerald-500/30 uppercase">
-                      Scheduled Today
+                    <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase bg-[#D5FF3E]/10 text-[#D5FF3E] border border-[#D5FF3E]/30">
+                      Active Routine
                     </span>
-                    <span className="text-xs text-slate-400">•</span>
-                    <span className="text-xs text-slate-400 font-medium">
-                      {todayWorkout.difficulty} Level
-                    </span>
+                    <span className="text-xs text-white/50">•</span>
+                    <span className="text-xs text-white/60 font-semibold">{todayWorkout.durationMinutes} Minutes</span>
+                    <span className="text-xs text-white/50">•</span>
+                    <span className="text-xs text-white/60 font-semibold">{todayWorkout.exercises.length} Movements</span>
                   </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+
+                  <h3 className="font-outfit text-2xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
                     {todayWorkout.routineName}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-300 mt-1">
-                    Target Muscle Groups: <strong className="text-emerald-400">{todayWorkout.focus}</strong>
+                  <p className="text-xs sm:text-sm text-white/60 mt-1">
+                    Targeted Muscle Heads: <strong className="text-white">{todayWorkout.focus}</strong>
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="text-right sm:border-r border-slate-800 sm:pr-6">
-                    <span className="text-[11px] text-slate-400 block font-medium">Estimated Time</span>
-                    <span className="text-lg font-bold text-white">{todayWorkout.durationMinutes} min</span>
-                  </div>
+                <div className="relative z-10 flex items-center gap-3">
                   <Link
                     href="/workout/session"
-                    className="px-6 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-lg shadow-emerald-500/25 active:scale-95 flex items-center gap-2"
+                    className="px-8 py-3.5 rounded-full bg-[#D5FF3E] hover:bg-[#c4f035] text-black text-sm font-extrabold transition-all shadow-xl shadow-[#D5FF3E]/20 hover:scale-105 active:scale-95 flex items-center gap-2"
                   >
                     <Play className="w-4 h-4 fill-black" />
-                    <span>Start Session</span>
+                    <span>Launch Live Session</span>
                   </Link>
                 </div>
               </div>
 
               {/* Exercise Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {todayWorkout.exercises.map((exercise, index) => (
-                  <ExerciseCard key={exercise.id} exercise={exercise} index={index} />
-                ))}
+              <div className="space-y-3">
+                <h4 className="font-outfit text-sm font-bold uppercase tracking-wider text-white/60">
+                  Movement Order ({todayWorkout.exercises.length} Exercises)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {todayWorkout.exercises.map((exercise, index) => (
+                    <ExerciseCard key={exercise.id} exercise={exercise} index={index} />
+                  ))}
+                </div>
               </div>
-            </>
+            </div>
           )}
         </div>
       )}
 
-      {/* Tab 2: Weekly Plan */}
+      {/* Tab 2: 7-Day Microcycle Split */}
       {activeTab === 'weekly' && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h4 className="text-lg font-bold text-white">Full Weekly Split Overview</h4>
-            <button
-              onClick={regeneratePlan}
-              className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-colors flex items-center gap-1.5"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Regenerate Split</span>
-            </button>
+        <div className="space-y-6">
+          <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
+            <h3 className="font-outfit text-xl font-bold text-white">
+              7-Day Training Microcycle ({profile.daysPerWeek} Training Days / Week)
+            </h3>
+            <p className="text-xs text-white/60 mt-1">
+              Engineered with optimal frequency and volume distribution for {profile.trainingStyle} adaptation.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {workoutPlan.days.map((day, i) => (
-              <div
-                key={day.id}
-                className={`glass-card p-6 rounded-2xl border transition-all ${
-                  day.isRestDay
-                    ? 'border-slate-800/60 opacity-80'
-                    : 'border-slate-800 hover:border-emerald-500/40'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
-                    {day.dayName}
-                  </span>
-                  <span
-                    className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                      day.isRestDay
-                        ? 'bg-slate-800 text-slate-400'
-                        : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                    }`}
-                  >
-                    {day.isRestDay ? 'Rest Day' : `${day.durationMinutes} min`}
-                  </span>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {workoutPlan.days.map((day, idx) => {
+              const isToday = idx === normalizedIndex;
 
-                <h4 className="text-base font-bold text-white mb-1">{day.routineName}</h4>
-                <p className="text-xs text-slate-400 mb-4">{day.focus}</p>
+              return (
+                <div
+                  key={day.id || idx}
+                  className={`p-6 rounded-3xl border transition-all duration-200 flex flex-col justify-between space-y-4 ${
+                    isToday
+                      ? 'bg-white/[0.06] border-[#D5FF3E] shadow-xl shadow-[#D5FF3E]/10'
+                      : 'bg-white/[0.02] border-white/10 hover:border-white/20'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-white/40">
+                        {day.dayName}
+                      </span>
+                      {isToday && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-[#D5FF3E] text-black">
+                          Today
+                        </span>
+                      )}
+                    </div>
 
-                {!day.isRestDay ? (
-                  <div className="space-y-1.5 border-t border-slate-800/80 pt-3 text-xs text-slate-300">
-                    <span className="text-[11px] text-slate-500 block mb-1">
-                      {day.exercises.length} Exercises:
-                    </span>
-                    {day.exercises.map((ex) => (
-                      <div key={ex.id} className="flex items-center justify-between py-0.5">
-                        <span className="truncate pr-2">{ex.name}</span>
-                        <span className="text-slate-500 shrink-0">{ex.sets} × {ex.reps}</span>
-                      </div>
-                    ))}
+                    <h4 className="font-outfit text-base font-extrabold text-white">
+                      {day.routineName}
+                    </h4>
+                    <p className="text-xs text-white/60 mt-1">Focus: {day.focus}</p>
                   </div>
-                ) : (
-                  <p className="text-xs text-slate-500 italic border-t border-slate-800/80 pt-3">
-                    Active joint mobility, hydration, and cellular recovery.
-                  </p>
-                )}
-              </div>
-            ))}
+
+                  <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-white/50">
+                    <span>{day.isRestDay ? 'Active Recovery' : `${day.durationMinutes} min`}</span>
+                    <span>{day.exercises.length} exercises</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -314,85 +382,83 @@ export default function WorkoutPage() {
       {/* Tab 3: Exercise Library */}
       {activeTab === 'exercises' && (
         <div className="space-y-6">
-          {/* Search & Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-between">
-            <div className="relative flex-1 max-w-md">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          {/* Search & Muscle Filters Bar */}
+          <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl space-y-4">
+            <div className="relative">
+              <Search className="w-4 h-4 text-white/40 absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search Bench Press, Pull-ups, Squats, Muscle-ups..."
                 value={exerciseSearch}
                 onChange={(e) => setExerciseSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-emerald-500"
+                placeholder="Search exercise by name or keyword..."
+                className="w-full pl-11 pr-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#D5FF3E] transition-colors"
               />
             </div>
 
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-              {muscleFilters.map((filter) => (
+            {/* Muscle Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+              {muscleFilters.map((muscle) => (
                 <button
-                  key={filter}
-                  onClick={() => setSelectedMuscleFilter(filter)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors whitespace-nowrap ${
-                    selectedMuscleFilter === filter
-                      ? 'bg-emerald-500 text-black'
-                      : 'bg-slate-800/70 text-slate-400 hover:text-white'
+                  key={muscle}
+                  onClick={() => setSelectedMuscleFilter(muscle)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                    selectedMuscleFilter === muscle
+                      ? 'bg-[#D5FF3E] text-black shadow-md shadow-[#D5FF3E]/20'
+                      : 'bg-white/5 text-white/60 hover:text-white border border-white/10'
                   }`}
                 >
-                  {filter}
+                  {muscle}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Exercise Grid */}
+          {/* Library Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredLibrary.map((exercise) => (
-              <ExerciseCard key={exercise.id} exercise={exercise} />
+            {filteredLibrary.map((exercise, index) => (
+              <ExerciseCard key={exercise.id} exercise={exercise} index={index} />
             ))}
           </div>
         </div>
       )}
 
-      {/* Tab 4: History */}
+      {/* Tab 4: Workout History */}
       {activeTab === 'history' && (
-        <div className="space-y-4">
-          <h4 className="text-lg font-bold text-white">Past Logged Workout Sessions</h4>
+        <div className="space-y-6">
+          <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
+            <h3 className="font-outfit text-xl font-bold text-white">Completed Workout Log History</h3>
+            <p className="text-xs text-white/60 mt-1">
+              Verified sessions recorded with progressive overload metrics, volume tonnage, and duration.
+            </p>
+          </div>
 
           {workoutHistory.length === 0 ? (
-            <div className="glass-card p-12 text-center rounded-3xl border border-slate-800">
-              <History className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-              <p className="text-sm text-slate-400">No past workouts logged yet.</p>
+            <div className="p-12 text-center rounded-3xl bg-white/[0.02] border border-white/10 text-white/40 text-xs">
+              No completed sessions recorded yet. Start today&apos;s workout to build your history!
             </div>
           ) : (
-            <div className="space-y-3">
-              {workoutHistory.map((item) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {workoutHistory.map((session) => (
                 <div
-                  key={item.id}
-                  className="glass-card p-5 rounded-2xl border border-slate-800 hover:border-slate-700 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  key={session.id}
+                  className="p-5 rounded-3xl bg-white/[0.03] border border-white/10 hover:border-white/20 transition-all flex items-center justify-between"
                 >
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-bold text-emerald-400">{item.date}</span>
-                      <span className="text-slate-600">•</span>
-                      <span className="text-xs text-slate-400">{item.trainingStyle}</span>
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-[#D5FF3E]/10 border border-[#D5FF3E]/20 text-[#D5FF3E] flex items-center justify-center font-bold">
+                      <CheckCircle2 className="w-6 h-6" />
                     </div>
-                    <h4 className="text-base font-bold text-white">{item.workoutName}</h4>
-                    {item.notes && <p className="text-xs text-slate-400 mt-1 italic">"{item.notes}"</p>}
+                    <div>
+                      <h4 className="font-outfit text-sm font-extrabold text-white">{session.workoutName}</h4>
+                      <p className="text-xs text-white/50 mt-0.5">
+                        {session.date} • {session.durationMinutes} min • {session.exercisesCompleted} movements
+                      </p>
+                    </div>
                   </div>
-
-                  <div className="flex items-center gap-4 text-xs">
-                    <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800 text-center min-w-[70px]">
-                      <span className="text-[10px] text-slate-500 block">Duration</span>
-                      <span className="font-bold text-white">{item.durationMinutes}m</span>
-                    </div>
-                    <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800 text-center min-w-[70px]">
-                      <span className="text-[10px] text-slate-500 block">Total Sets</span>
-                      <span className="font-bold text-emerald-400">{item.totalSets}</span>
-                    </div>
-                    <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800 text-center min-w-[70px]">
-                      <span className="text-[10px] text-slate-500 block">Calories</span>
-                      <span className="font-bold text-orange-400">{item.caloriesBurned} kcal</span>
-                    </div>
+                  <div className="text-right">
+                    <span className="font-outfit text-base font-extrabold text-[#D5FF3E] block">
+                      {session.totalVolumeKg} kg
+                    </span>
+                    <span className="text-[10px] uppercase font-bold text-white/40">Total Tonnage</span>
                   </div>
                 </div>
               ))}
@@ -403,4 +469,3 @@ export default function WorkoutPage() {
     </div>
   );
 }
-

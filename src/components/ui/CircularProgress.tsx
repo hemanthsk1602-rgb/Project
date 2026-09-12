@@ -5,7 +5,7 @@ interface CircularProgressProps {
   max: number;
   size?: number;
   strokeWidth?: number;
-  color?: 'emerald' | 'cyan' | 'orange' | 'purple';
+  color?: 'lime' | 'emerald' | 'cyan' | 'orange' | 'purple';
   label?: string;
   sublabel?: string;
   showValueText?: boolean;
@@ -16,7 +16,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   max,
   size = 140,
   strokeWidth = 10,
-  color = 'emerald',
+  color = 'lime',
   label,
   sublabel,
   showValueText = true,
@@ -27,6 +27,11 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   const colorConfig = {
+    lime: {
+      stroke: '#D5FF3E',
+      glow: 'drop-shadow(0 0 10px rgba(213, 255, 62, 0.6))',
+      text: 'text-[#D5FF3E]',
+    },
     emerald: {
       stroke: '#10B981',
       glow: 'drop-shadow(0 0 8px rgba(16, 185, 129, 0.6))',
@@ -40,7 +45,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
     orange: {
       stroke: '#F97316',
       glow: 'drop-shadow(0 0 8px rgba(249, 115, 22, 0.6))',
-      text: 'text-orange-400',
+      text: 'text-amber-400',
     },
     purple: {
       stroke: '#A855F7',
@@ -50,14 +55,14 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   }[color];
 
   return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
+    <div className="relative inline-flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="transform -rotate-90">
         {/* Background Circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#1E293B"
+          stroke="rgba(255, 255, 255, 0.08)"
           strokeWidth={strokeWidth}
           fill="transparent"
           strokeLinecap="round"
@@ -82,15 +87,14 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
       {/* Center Label */}
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
         {showValueText && (
-          <span className={`text-2xl font-black tracking-tight ${colorConfig.text}`}>
+          <span className={`font-outfit text-2xl font-black tracking-tight ${colorConfig.text}`}>
             {value}
-            <span className="text-xs text-slate-400 font-normal ml-0.5">/{max}</span>
+            <span className="text-xs text-white/50 font-normal ml-0.5">/{max}</span>
           </span>
         )}
-        {label && <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider mt-0.5">{label}</span>}
-        {sublabel && <span className="text-[10px] text-slate-400">{sublabel}</span>}
+        {label && <span className="text-[10px] font-bold text-white/70 uppercase tracking-wider mt-0.5">{label}</span>}
+        {sublabel && <span className="text-[10px] text-white/40">{sublabel}</span>}
       </div>
     </div>
   );
 };
-

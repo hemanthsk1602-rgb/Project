@@ -66,7 +66,6 @@ export default function WorkoutSessionPage() {
     exercises.forEach((ex) => {
       const sets: SessionSet[] = [];
       for (let i = 1; i <= ex.sets; i++) {
-        // parse target rep count number
         const baseReps = parseInt(ex.reps) || 10;
         sets.push({
           setNumber: i,
@@ -191,7 +190,7 @@ export default function WorkoutSessionPage() {
       totalSets: stats.totalCompletedSets || currentRoutine.exercises.length * 3,
       totalVolumeKg: stats.totalVolume || 1200,
       caloriesBurned: stats.estimatedCalories,
-      notes: `Crushed ${currentRoutine.routineName} with focus on form & tension.`,
+      notes: `Crushed ${currentRoutine.routineName} with focus on progressive tension.`,
     });
 
     setShowSummaryModal(true);
@@ -217,41 +216,41 @@ export default function WorkoutSessionPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-300">
       {/* Session Top Status Bar */}
-      <div className="glass-card p-4 sm:p-6 rounded-3xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-5 sm:p-6 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-0.5">
-            Active Training Session
+          <span className="text-[10px] font-extrabold text-[#D5FF3E] uppercase tracking-wider block mb-0.5">
+            Live Workout Session
           </span>
-          <h2 className="text-xl sm:text-2xl font-black text-white">
+          <h2 className="font-outfit text-xl sm:text-2xl font-extrabold text-white uppercase tracking-tight">
             {currentRoutine.routineName}
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Exercise {currentExIndex + 1} of {exercises.length}
+          <p className="text-xs text-white/50 mt-0.5">
+            Movement {currentExIndex + 1} of {exercises.length} • {currentExercise.muscleGroup}
           </p>
         </div>
 
         {/* Stopwatch & Session Controls */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-200">
-            <Clock className="w-4 h-4 text-emerald-400" />
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 border border-white/10 text-white">
+            <Clock className="w-4 h-4 text-[#D5FF3E]" />
             <span className="text-sm font-black font-mono">{formatTime(elapsedSeconds)}</span>
           </div>
 
           <button
             onClick={() => setIsPaused(!isPaused)}
-            className={`p-2.5 rounded-xl border transition-all ${
+            className={`p-2.5 rounded-full border transition-all ${
               isPaused
-                ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
-                : 'bg-slate-800/80 text-slate-300 hover:text-white border-slate-700'
+                ? 'bg-[#D5FF3E]/20 text-[#D5FF3E] border-[#D5FF3E]/40'
+                : 'bg-white/5 text-white/70 hover:text-white border-white/10'
             }`}
             title={isPaused ? 'Resume Session' : 'Pause Session'}
           >
-            {isPaused ? <Play className="w-4 h-4 fill-emerald-400" /> : <Pause className="w-4 h-4" />}
+            {isPaused ? <Play className="w-4 h-4 fill-[#D5FF3E]" /> : <Pause className="w-4 h-4" />}
           </button>
 
           <button
             onClick={handleFinishWorkout}
-            className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-md shadow-emerald-500/25 active:scale-95"
+            className="px-6 py-2.5 rounded-full bg-[#D5FF3E] hover:bg-[#c4f035] text-black text-xs font-extrabold transition-all shadow-lg shadow-[#D5FF3E]/20 hover:scale-105 active:scale-95"
           >
             Finish Workout
           </button>
@@ -260,31 +259,31 @@ export default function WorkoutSessionPage() {
 
       {/* Rest Timer Floating/Inline Bar */}
       {restSecondsRemaining !== null && restSecondsRemaining > 0 && (
-        <div className="p-4 rounded-2xl bg-cyan-950/40 border border-cyan-500/40 flex items-center justify-between animate-in slide-in-from-top-2">
+        <div className="p-4 rounded-3xl bg-black/60 border border-[#D5FF3E]/40 backdrop-blur-2xl flex items-center justify-between animate-in slide-in-from-top-2 shadow-xl shadow-[#D5FF3E]/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-mono font-black text-base border border-cyan-500/30">
+            <div className="w-12 h-12 rounded-2xl bg-[#D5FF3E]/15 text-[#D5FF3E] flex items-center justify-center font-mono font-black text-lg border border-[#D5FF3E]/30 animate-pulse">
               {restSecondsRemaining}s
             </div>
             <div>
-              <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider block">
+              <span className="text-[11px] font-bold text-[#D5FF3E] uppercase tracking-wider block">
                 Rest Timer Active
               </span>
-              <span className="text-[11px] text-slate-400">
-                Catch your breath, hydrate, and prepare for set {currentSets.filter((s) => s.completed).length + 1}
+              <span className="text-xs text-white/60">
+                Hydrate and mentally prepare for Set {currentSets.filter((s) => s.completed).length + 1}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setRestSecondsRemaining((prev) => (prev || 0) + 30)}
-              className="px-2.5 py-1 rounded-lg bg-slate-800/90 text-cyan-300 text-xs font-bold border border-slate-700 hover:bg-slate-700"
+              className="px-3 py-1.5 rounded-full bg-white/10 text-white text-xs font-bold border border-white/20 hover:bg-white/15 transition-all"
             >
               +30s
             </button>
             <button
               onClick={() => setRestSecondsRemaining(0)}
-              className="p-1 rounded-lg text-slate-400 hover:text-white"
+              className="p-1.5 rounded-full text-white/40 hover:text-white transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -293,22 +292,24 @@ export default function WorkoutSessionPage() {
       )}
 
       {/* Main Exercise Card in Focus */}
-      <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-800 relative space-y-6">
+      <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl relative space-y-6">
         {/* Exercise Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#D5FF3E]">
               <Dumbbell className="w-7 h-7" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#D5FF3E]">
                   {currentExercise.muscleGroup}
                 </span>
-                <span className="text-slate-600">•</span>
-                <span className="text-xs text-slate-400">{currentExercise.difficulty}</span>
+                <span className="text-white/30">•</span>
+                <span className="text-xs text-white/50">{currentExercise.difficulty}</span>
               </div>
-              <h3 className="text-2xl font-black text-white mt-0.5">{currentExercise.name}</h3>
+              <h3 className="font-outfit text-2xl font-extrabold text-white mt-0.5 tracking-tight">
+                {currentExercise.name}
+              </h3>
             </div>
           </div>
 
@@ -316,7 +317,7 @@ export default function WorkoutSessionPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowReplaceModal(true)}
-              className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-colors flex items-center gap-1.5"
+              className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-semibold border border-white/10 transition-colors flex items-center gap-1.5"
             >
               <ArrowRightLeft className="w-3.5 h-3.5" />
               <span>Replace Exercise</span>
@@ -326,7 +327,7 @@ export default function WorkoutSessionPage() {
 
         {/* Interactive Sets Logger Table */}
         <div className="space-y-2.5">
-          <div className="grid grid-cols-12 gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3">
+          <div className="grid grid-cols-12 gap-2 text-[10px] font-bold text-white/40 uppercase tracking-wider px-3">
             <span className="col-span-2 text-center">Set</span>
             <span className="col-span-3 text-center">Target Reps</span>
             <span className="col-span-3 text-center">Weight (kg)</span>
@@ -337,19 +338,19 @@ export default function WorkoutSessionPage() {
           {currentSets.map((set, idx) => (
             <div
               key={idx}
-              className={`grid grid-cols-12 gap-2 items-center p-3 rounded-2xl border transition-all ${
+              className={`grid grid-cols-12 gap-2 items-center p-3.5 rounded-2xl border transition-all ${
                 set.completed
-                  ? 'bg-emerald-500/10 border-emerald-500/30'
-                  : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
+                  ? 'bg-[#D5FF3E]/10 border-[#D5FF3E]/30'
+                  : 'bg-black/30 border-white/5 hover:border-white/10'
               }`}
             >
               {/* Set # */}
-              <div className="col-span-2 text-center font-bold text-sm text-white">
+              <div className="col-span-2 text-center font-bold text-xs text-white font-mono">
                 Set 0{set.setNumber}
               </div>
 
               {/* Target Reps */}
-              <div className="col-span-3 text-center text-xs font-medium text-slate-300">
+              <div className="col-span-3 text-center text-xs font-semibold text-white/60">
                 {set.targetReps}
               </div>
 
@@ -361,7 +362,7 @@ export default function WorkoutSessionPage() {
                   step="2.5"
                   value={set.weight}
                   onChange={(e) => handleUpdateSet(idx, 'weight', Number(e.target.value) || 0)}
-                  className="w-16 px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-center text-xs font-bold text-white focus:outline-none focus:border-emerald-500"
+                  className="w-16 px-2 py-1.5 rounded-xl bg-black/50 border border-white/10 text-center text-xs font-bold text-white focus:outline-none focus:border-[#D5FF3E] transition-colors"
                 />
               </div>
 
@@ -373,7 +374,7 @@ export default function WorkoutSessionPage() {
                   max="100"
                   value={set.reps}
                   onChange={(e) => handleUpdateSet(idx, 'reps', Number(e.target.value) || 0)}
-                  className="w-14 px-2 py-1 rounded-lg bg-slate-800 border border-slate-700 text-center text-xs font-bold text-emerald-400 focus:outline-none focus:border-emerald-500"
+                  className="w-14 px-2 py-1.5 rounded-xl bg-black/50 border border-white/10 text-center text-xs font-bold text-[#D5FF3E] focus:outline-none focus:border-[#D5FF3E] transition-colors"
                 />
               </div>
 
@@ -381,14 +382,14 @@ export default function WorkoutSessionPage() {
               <div className="col-span-2 flex justify-end">
                 <button
                   onClick={() => handleCompleteSet(idx)}
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
+                  className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                     set.completed
-                      ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/30'
-                      : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+                      ? 'bg-[#D5FF3E] text-black shadow-lg shadow-[#D5FF3E]/30 scale-105'
+                      : 'bg-white/10 text-white/40 hover:text-white hover:bg-white/20'
                   }`}
                   aria-label="Complete set"
                 >
-                  <Check className="w-5 h-5 stroke-[2.5]" />
+                  <Check className="w-5 h-5 stroke-[3]" />
                 </button>
               </div>
             </div>
@@ -396,20 +397,20 @@ export default function WorkoutSessionPage() {
         </div>
 
         {/* Form execution cues footer */}
-        <div className="p-4 rounded-2xl bg-slate-900/50 border border-slate-800/80">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
-            Coach Form Cue
+        <div className="p-4 rounded-2xl bg-black/40 border border-white/5">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#D5FF3E] block mb-1">
+            Biomechanical Form Cue
           </span>
-          <p className="text-xs text-slate-300 leading-relaxed">
-            {currentExercise.formTips[0] || 'Focus on controlled tempo and maximum range of motion.'}
+          <p className="text-xs text-white/70 leading-relaxed">
+            {currentExercise.formTips[0] || 'Focus on controlled eccentric tempo and peak isometric tension.'}
           </p>
         </div>
 
         {/* Action Controls for this exercise */}
-        <div className="pt-4 border-t border-slate-800 flex items-center justify-between gap-3">
+        <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
           <button
             onClick={handleSkipExercise}
-            className="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white text-xs font-semibold transition-colors flex items-center gap-1.5"
+            className="px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-xs font-bold transition-colors flex items-center gap-1.5"
           >
             <SkipForward className="w-3.5 h-3.5" />
             <span>Skip Exercise</span>
@@ -421,7 +422,7 @@ export default function WorkoutSessionPage() {
             onClick={handleNextExercise}
             icon={currentExIndex === exercises.length - 1 ? <Trophy className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
           >
-            {currentExIndex === exercises.length - 1 ? 'Finish Workout' : 'Next Exercise'}
+            {currentExIndex === exercises.length - 1 ? 'Finish Workout' : 'Next Movement'}
           </Button>
         </div>
       </div>
@@ -439,17 +440,17 @@ export default function WorkoutSessionPage() {
         isOpen={showSummaryModal}
         onClose={() => router.push('/dashboard')}
         title="Workout Completed 🎉"
-        subtitle="Outstanding effort! Your body adapts when you push through resistance."
+        subtitle="Outstanding effort! Your body adapts through consistency and overload."
         maxWidth="md"
       >
         <div className="space-y-6 text-center py-2">
-          <div className="w-20 h-20 rounded-3xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto text-3xl shadow-lg shadow-emerald-500/20 animate-bounce">
+          <div className="w-20 h-20 rounded-3xl bg-[#D5FF3E]/15 border border-[#D5FF3E]/30 text-[#D5FF3E] flex items-center justify-center mx-auto text-3xl shadow-xl shadow-[#D5FF3E]/20 animate-bounce">
             🏆
           </div>
 
           <div>
-            <h3 className="text-xl font-black text-white">{currentRoutine.routineName}</h3>
-            <p className="text-xs text-slate-400 mt-1">Logged to your fitness history & streak updated!</p>
+            <h3 className="font-outfit text-xl font-extrabold text-white">{currentRoutine.routineName}</h3>
+            <p className="text-xs text-white/60 mt-1">Logged to your fitness history & streak updated!</p>
           </div>
 
           {/* Stats Breakdown */}
@@ -457,44 +458,44 @@ export default function WorkoutSessionPage() {
             const stats = calculateWorkoutStats();
             return (
               <div className="grid grid-cols-2 gap-3 text-left">
-                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <span className="text-[11px] text-slate-400 block font-medium">Duration</span>
-                  <span className="text-base font-black text-white mt-0.5">
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                  <span className="text-[10px] text-white/40 block font-bold uppercase tracking-wider">Duration</span>
+                  <span className="font-outfit text-base font-extrabold text-white mt-0.5">
                     {stats.durationMinutes} Minutes
                   </span>
                 </div>
-                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <span className="text-[11px] text-slate-400 block font-medium">Exercises</span>
-                  <span className="text-base font-black text-white mt-0.5">
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                  <span className="text-[10px] text-white/40 block font-bold uppercase tracking-wider">Movements</span>
+                  <span className="font-outfit text-base font-extrabold text-white mt-0.5">
                     {exercises.length} Completed
                   </span>
                 </div>
-                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <span className="text-[11px] text-slate-400 block font-medium">Total Sets</span>
-                  <span className="text-base font-black text-emerald-400 mt-0.5">
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                  <span className="text-[10px] text-white/40 block font-bold uppercase tracking-wider">Total Sets</span>
+                  <span className="font-outfit text-base font-extrabold text-[#D5FF3E] mt-0.5">
                     {stats.totalCompletedSets || currentRoutine.exercises.length * 3} Sets
                   </span>
                 </div>
-                <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                  <span className="text-[11px] text-slate-400 block font-medium">Est. Calories</span>
-                  <span className="text-base font-black text-orange-400 mt-0.5">
-                    ~{stats.estimatedCalories} kcal
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10">
+                  <span className="text-[10px] text-white/40 block font-bold uppercase tracking-wider">Total Tonnage</span>
+                  <span className="font-outfit text-base font-extrabold text-white mt-0.5">
+                    {stats.totalVolume} kg
                   </span>
                 </div>
               </div>
             );
           })()}
 
-          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 font-semibold">
+          <div className="p-3.5 rounded-2xl bg-[#D5FF3E]/10 border border-[#D5FF3E]/20 text-xs text-[#D5FF3E] font-bold">
             +200 XP Earned • Streak +1 Day Extended 🔥
           </div>
 
           <div className="flex items-center gap-3 pt-2">
             <button
               onClick={() => router.push('/dashboard')}
-              className="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-colors"
+              className="flex-1 py-3 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition-colors"
             >
-              Go to Dashboard
+              Dashboard
             </button>
             <Button
               variant="primary"
@@ -510,4 +511,3 @@ export default function WorkoutSessionPage() {
     </div>
   );
 }
-
