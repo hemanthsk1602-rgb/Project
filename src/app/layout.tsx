@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { FitnessProvider } from '@/lib/context/FitnessContext';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
-  title: 'FitPlus - AI-Powered Personal Fitness Companion',
+  title: 'CodeArena — Think. Code. Improve.',
   description:
-    'FitPlus crafts bespoke workout routines for Gym, Calisthenics, and Hybrid athletes. Track workouts, nutrition, recovery, and elevate your performance with AI guidance.',
+    'An AI-powered coding practice, DSA learning, code review, and competitive programming platform for ambitious engineers.',
+  icons: {
+    icon: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -15,8 +18,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark scroll-smooth">
-      <body className="min-h-screen bg-[#080C14] text-slate-100 antialiased selection:bg-[#D5FF3E] selection:text-black">
-        <FitnessProvider>{children}</FitnessProvider>
+      <body className="min-h-screen bg-[#090D16] text-zinc-100 antialiased selection:bg-brand-500/30 selection:text-white">
+        {children}
+        <Toaster 
+          position="bottom-right" 
+          theme="dark"
+          toastOptions={{
+            style: {
+              background: '#0E1524',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              color: '#F8FAFC',
+              fontFamily: 'Inter, sans-serif',
+            },
+          }}
+        />
       </body>
     </html>
   );

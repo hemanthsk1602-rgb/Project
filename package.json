@@ -1,5 +1,5 @@
 {
-  "name": "fitplus",
+  "name": "codearena",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
+    "@monaco-editor/react": "^4.7.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.116.0",
     "canvas-confetti": "^1.9.3",
