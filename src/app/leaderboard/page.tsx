@@ -170,7 +170,9 @@ export default function LeaderboardPage() {
                 <Medal className="w-5 h-5 text-zinc-400" />
               </div>
               <div className="flex items-center gap-3">
-                <img src={topThree[1].avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover border border-zinc-600" />
+                <div className="w-10 h-10 rounded-full bg-zinc-800 border border-zinc-600 flex items-center justify-center font-bold text-zinc-300 font-mono text-sm shrink-0">
+                  {topThree[1].username.slice(0, 2).toUpperCase()}
+                </div>
                 <div>
                   <h3 className="text-sm font-bold text-white">{topThree[1].username}</h3>
                   <span className="text-xs text-zinc-500 font-mono">@{topThree[1].handle}</span>
@@ -191,7 +193,9 @@ export default function LeaderboardPage() {
                 <Trophy className="w-5 h-5 text-amber-400" />
               </div>
               <div className="flex items-center gap-3">
-                <img src={topThree[0].avatarUrl} alt="" className="w-12 h-12 rounded-full object-cover border-2 border-amber-400/60" />
+                <div className="w-12 h-12 rounded-full bg-amber-500/20 border-2 border-amber-400/60 flex items-center justify-center font-extrabold text-amber-300 font-mono text-base shrink-0">
+                  {topThree[0].username.slice(0, 2).toUpperCase()}
+                </div>
                 <div>
                   <h3 className="text-base font-bold text-white">{topThree[0].username}</h3>
                   <span className="text-xs text-zinc-400 font-mono">@{topThree[0].handle}</span>
@@ -212,7 +216,9 @@ export default function LeaderboardPage() {
                 <Medal className="w-5 h-5 text-amber-600" />
               </div>
               <div className="flex items-center gap-3">
-                <img src={topThree[2].avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover border border-amber-800" />
+                <div className="w-10 h-10 rounded-full bg-amber-900/30 border border-amber-800 flex items-center justify-center font-bold text-amber-500 font-mono text-sm shrink-0">
+                  {topThree[2].username.slice(0, 2).toUpperCase()}
+                </div>
                 <div>
                   <h3 className="text-sm font-bold text-white">{topThree[2].username}</h3>
                   <span className="text-xs text-zinc-500 font-mono">@{topThree[2].handle}</span>
@@ -255,11 +261,9 @@ export default function LeaderboardPage() {
 
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-3">
-                        <img
-                          src={user.avatarUrl}
-                          alt=""
-                          className="w-7 h-7 rounded-full object-cover border border-white/10"
-                        />
+                        <div className="w-7 h-7 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center font-mono text-[10px] text-zinc-300 font-semibold shrink-0">
+                          {user.username.slice(0, 2).toUpperCase()}
+                        </div>
                         <div>
                           <div className="font-semibold text-zinc-200">
                             {user.username}

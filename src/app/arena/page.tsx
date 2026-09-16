@@ -252,11 +252,9 @@ export default function ArenaPage() {
 
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2.5">
-                          <img
-                            src={standing.avatarUrl}
-                            alt=""
-                            className="w-6 h-6 rounded-full object-cover border border-white/10"
-                          />
+                          <div className="w-6 h-6 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center font-mono text-[10px] text-zinc-300 font-semibold shrink-0">
+                            {standing.username.slice(0, 2).toUpperCase()}
+                          </div>
                           <div>
                             <div className="font-semibold text-zinc-200">
                               {standing.username}
