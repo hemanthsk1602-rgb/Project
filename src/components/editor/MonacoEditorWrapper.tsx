@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import type { OnMount } from '@monaco-editor/react';
 import { CodeLanguage } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 const Editor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
@@ -31,7 +32,9 @@ export function MonacoEditorWrapper({
   onFormat,
   onRun,
 }: MonacoEditorWrapperProps) {
+  const { theme } = useTheme();
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+  const monacoRef = useRef<Parameters<OnMount>[1] | null>(null);
   const [cursorPos, setCursorPos] = React.useState({ ln: 1, col: 1 });
 
   const monacoLangMap: Record<CodeLanguage, string> = {
@@ -43,6 +46,7 @@ export function MonacoEditorWrapper({
 
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
+    monacoRef.current = monaco;
 
     // Define CodeArena Dark Theme
     monaco.editor.defineTheme('codearena-dark', {
@@ -73,7 +77,37 @@ export function MonacoEditorWrapper({
       },
     });
 
-    monaco.editor.setTheme('codearena-dark');
+    // Define CodeArena Light Theme
+    monaco.editor.defineTheme('codearena-light', {
+      base: 'vs',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '6a737d', fontStyle: 'italic' },
+        { token: 'keyword', foreground: 'd73a49', fontStyle: 'bold' },
+        { token: 'string', foreground: '22863a' },
+        { token: 'number', foreground: '005cc5' },
+        { token: 'type', foreground: '6f42c1' },
+        { token: 'delimiter', foreground: '24292e' },
+        { token: 'identifier', foreground: '24292e' },
+        { token: 'function', foreground: '6f42c1' },
+      ],
+      colors: {
+        'editor.background': '#FFFFFF',
+        'editor.foreground': '#24292E',
+        'editor.lineHighlightBackground': '#F1F5F9',
+        'editorCursor.foreground': '#4F46E5',
+        'editorLineNumber.foreground': '#94A3B8',
+        'editorLineNumber.activeForeground': '#334155',
+        'editorIndentGuide.background': '#E2E8F0',
+        'editorIndentGuide.activeBackground': '#CBD5E1',
+        'editor.selectionBackground': '#C7D2FE',
+        'editorBracketMatch.background': '#E0E7FF',
+        'editorBracketMatch.border': '#6366F1',
+      },
+    });
+
+    const activeTheme = theme === 'dark' ? 'codearena-dark' : 'codearena-light';
+    monaco.editor.setTheme(activeTheme);
 
     // Register Keyboard Shortcut: Shift + Alt + F (Format Code)
     editor.addCommand(
@@ -97,6 +131,13 @@ export function MonacoEditorWrapper({
     });
   };
 
+  // Dynamically synchronize theme changes
+  useEffect(() => {
+    if (monacoRef.current) {
+      monacoRef.current.editor.setTheme(theme === 'dark' ? 'codearena-dark' : 'codearena-light');
+    }
+  }, [theme]);
+
   return (
     <div className="h-full w-full flex flex-col bg-[#080C14] overflow-hidden">
       {/* Editor Main Canvas */}
@@ -106,7 +147,7 @@ export function MonacoEditorWrapper({
           language={monacoLangMap[language]}
           value={value}
           onChange={(v) => onChange(v || '')}
-          theme="vs-dark"
+          theme={theme === 'dark' ? 'codearena-dark' : 'codearena-light'}
           onMount={handleEditorDidMount}
           options={{
             fontFamily: "'JetBrains Mono', 'Fira Code', monospace",

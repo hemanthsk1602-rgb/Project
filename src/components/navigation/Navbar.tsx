@@ -14,18 +14,24 @@ import {
   X, 
   Play, 
   User, 
-  ChevronDown,
-  Flame,
-  Bot,
-  ExternalLink,
-  ShieldCheck,
-  Zap,
-  Check
+  ChevronDown, 
+  Flame, 
+  Bot, 
+  Zap, 
+  Sun, 
+  Moon, 
+  LogOut, 
+  LogIn 
 } from 'lucide-react';
 import { CommandPalette } from './CommandPalette';
+import { useTheme } from '@/context/ThemeContext';
+import { useAuth } from '@/context/AuthContext';
 
 export function Navbar() {
   const pathname = usePathname();
+  const { theme, toggleTheme } = useTheme();
+  const { user, isAuthenticated, logout } = useAuth();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [aiMenuOpen, setAiMenuOpen] = useState(false);
@@ -79,6 +85,11 @@ export function Navbar() {
 
   // If in practice mode, the specialized IDENavbar is used instead
   if (pathname?.startsWith('/practice')) {
+    return null;
+  }
+
+  // If on login page, render nothing from standard navbar (it has its own streamlined header)
+  if (pathname === '/login') {
     return null;
   }
 
@@ -203,8 +214,8 @@ export function Navbar() {
             </nav>
           </div>
 
-          {/* Right: Search + Streak + Start Coding + User Profile Menu */}
-          <div className="hidden sm:flex items-center gap-4">
+          {/* Right: Search + Streak + Theme Toggle + Start Coding + User Profile Menu */}
+          <div className="hidden sm:flex items-center gap-3">
             {/* Search Trigger */}
             <button
               onClick={() => setSearchOpen(true)}
@@ -223,8 +234,22 @@ export function Navbar() {
               title="Consecutive daily problem solving streak"
             >
               <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span>87d</span>
+              <span>{user?.streak || 87}d</span>
             </div>
+
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-zinc-400 hover:text-white transition-colors"
+              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-3.5 h-3.5 text-amber-400" />
+              ) : (
+                <Moon className="w-3.5 h-3.5 text-zinc-600" />
+              )}
+            </button>
 
             {/* Primary Action Button */}
             <Link
@@ -235,79 +260,99 @@ export function Navbar() {
               <span>Practice IDE</span>
             </Link>
 
-            {/* Profile User Dropdown */}
-            <div className="relative" ref={profileMenuRef}>
-              <button
-                onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-                className="flex items-center gap-1.5 p-1 rounded-full hover:bg-white/5 transition-colors border border-white/10"
-                title="Account Menu"
+            {/* Profile User Dropdown or Sign In */}
+            {isAuthenticated && user ? (
+              <div className="relative" ref={profileMenuRef}>
+                <button
+                  onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                  className="flex items-center gap-1.5 p-1 rounded-full hover:bg-white/5 transition-colors border border-white/10"
+                  title="Account Menu"
+                >
+                  <div className="w-7 h-7 rounded-full bg-zinc-800 text-zinc-200 text-xs font-semibold flex items-center justify-center">
+                    {user.avatar || 'HS'}
+                  </div>
+                </button>
+
+                {profileMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 rounded-xl bg-[#0B0F19] border border-white/[0.1] shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                    {/* User Profile Header */}
+                    <div className="px-3 py-2 border-b border-white/[0.06] mb-1">
+                      <div className="font-semibold text-xs text-white">{user.name}</div>
+                      <div className="text-[11px] text-zinc-500 font-mono">@{user.username} • Level {user.level}</div>
+                    </div>
+
+                    <div className="space-y-0.5">
+                      <Link
+                        href="/profile"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-white/[0.05] transition-colors"
+                      >
+                        <User className="w-3.5 h-3.5 text-zinc-400" />
+                        <span>Developer Profile</span>
+                      </Link>
+
+                      <Link
+                        href="/analytics"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-white/[0.05] transition-colors"
+                      >
+                        <BarChart3 className="w-3.5 h-3.5 text-zinc-400" />
+                        <span>Performance Analytics</span>
+                      </Link>
+
+                      <Link
+                        href="/leaderboard"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-white/[0.05] transition-colors"
+                      >
+                        <Trophy className="w-3.5 h-3.5 text-zinc-400" />
+                        <span>Global Leaderboards</span>
+                      </Link>
+                    </div>
+
+                    <div className="mt-1 pt-1 border-t border-white/[0.06] space-y-0.5">
+                      <button
+                        onClick={() => {
+                          logout();
+                          setProfileMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-rose-400 hover:bg-rose-500/10 transition-colors"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] hover:bg-white/[0.05] text-xs font-medium text-white transition-colors"
               >
-                <div className="w-7 h-7 rounded-full bg-zinc-800 text-zinc-200 text-xs font-semibold flex items-center justify-center">
-                  HS
-                </div>
-              </button>
-
-              {profileMenuOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 rounded-xl bg-[#0B0F19] border border-white/[0.1] shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
-                  {/* User Profile Header */}
-                  <div className="px-3 py-2 border-b border-white/[0.06] mb-1">
-                    <div className="font-semibold text-xs text-white">Hemanth S</div>
-                    <div className="text-[11px] text-zinc-500 font-mono">@hemanth_dev • Level 24</div>
-                  </div>
-
-                  <div className="space-y-0.5">
-                    <Link
-                      href="/profile"
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-white/[0.05] transition-colors"
-                    >
-                      <User className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>Developer Profile</span>
-                    </Link>
-
-                    <Link
-                      href="/analytics"
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-white/[0.05] transition-colors"
-                    >
-                      <BarChart3 className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>Performance Analytics</span>
-                    </Link>
-
-                    <Link
-                      href="/leaderboard"
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-zinc-300 hover:text-white hover:bg-white/[0.05] transition-colors"
-                    >
-                      <Trophy className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>Global Leaderboards</span>
-                    </Link>
-                  </div>
-
-                  <div className="mt-1 pt-1 border-t border-white/[0.06]">
-                    <Link
-                      href="/practice/two-sum"
-                      className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-brand-300 hover:text-white hover:bg-brand-500/20 transition-colors font-medium"
-                    >
-                      <span>Open Workspace</span>
-                      <Play className="w-3 h-3 fill-current" />
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
+                <LogIn className="w-3.5 h-3.5 text-brand-400" />
+                <span>Sign In</span>
+              </Link>
+            )}
           </div>
 
-          {/* Mobile Hamburger Button */}
-          <div className="flex md:hidden items-center gap-2">
+          {/* Mobile Hamburger & Theme Toggle Button */}
+          <div className="flex md:hidden items-center gap-1.5">
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-zinc-400 hover:text-zinc-200"
+              title="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+            </button>
             <button
               onClick={() => setSearchOpen(true)}
               className="p-2 text-zinc-400 hover:text-zinc-200"
             >
-              <Search className="w-5 h-5" />
+              <Search className="w-4 h-4" />
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-zinc-400 hover:text-white"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -364,29 +409,41 @@ export function Navbar() {
 
             <div className="space-y-1 pt-2 border-t border-white/[0.06]">
               <div className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 px-3 py-1">
-                Developer Profile
+                Developer Account
               </div>
-              <Link
-                href="/analytics"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-zinc-300 hover:text-white hover:bg-white/5"
-              >
-                <BarChart3 className="w-4 h-4 text-zinc-400" />
-                <span>Performance Analytics</span>
-              </Link>
-              <Link
-                href="/leaderboard"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-zinc-300 hover:text-white hover:bg-white/5"
-              >
-                <Trophy className="w-4 h-4 text-zinc-400" />
-                <span>Leaderboards</span>
-              </Link>
-              <Link
-                href="/profile"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-zinc-300 hover:text-white hover:bg-white/5"
-              >
-                <User className="w-4 h-4 text-zinc-400" />
-                <span>Developer Résumé</span>
-              </Link>
+              {isAuthenticated && user ? (
+                <>
+                  <Link
+                    href="/profile"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-zinc-300 hover:text-white hover:bg-white/5"
+                  >
+                    <User className="w-4 h-4 text-zinc-400" />
+                    <span>Developer Résumé (@{user.username})</span>
+                  </Link>
+                  <Link
+                    href="/analytics"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-zinc-300 hover:text-white hover:bg-white/5"
+                  >
+                    <BarChart3 className="w-4 h-4 text-zinc-400" />
+                    <span>Performance Analytics</span>
+                  </Link>
+                  <button
+                    onClick={logout}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-rose-400 hover:bg-rose-500/10 text-left"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-brand-300 hover:text-white hover:bg-white/5"
+                >
+                  <LogIn className="w-4 h-4 text-brand-400" />
+                  <span>Sign In to Workstation</span>
+                </Link>
+              )}
             </div>
 
             <div className="pt-3 border-t border-white/[0.08]">

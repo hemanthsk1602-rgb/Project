@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from 'sonner';
+import { ThemeProvider } from '@/context/ThemeContext';
+import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'CodeArena — Think. Code. Improve.',
@@ -17,21 +19,40 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark scroll-smooth">
-      <body className="min-h-screen bg-[#090D16] text-zinc-100 antialiased selection:bg-brand-500/30 selection:text-white">
-        {children}
-        <Toaster 
-          position="bottom-right" 
-          theme="dark"
-          toastOptions={{
-            style: {
-              background: '#0E1524',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              color: '#F8FAFC',
-              fontFamily: 'Inter, sans-serif',
-            },
+    <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('codearena-theme') || 
+                  (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+                if (theme === 'dark') {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('light');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.classList.add('light');
+                }
+              } catch (e) {}
+            `,
           }}
         />
+      </head>
+      <body className="min-h-screen bg-[#090D16] text-zinc-100 antialiased selection:bg-brand-500/30 selection:text-white">
+        <ThemeProvider>
+          <AuthProvider>
+            {children}
+            <Toaster 
+              position="bottom-right" 
+              richColors
+              closeButton
+              toastOptions={{
+                className: 'font-sans text-xs',
+              }}
+            />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

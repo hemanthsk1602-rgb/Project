@@ -13,10 +13,13 @@ import {
   Minimize2,
   Terminal,
   CheckCircle2,
-  RotateCcw
+  RotateCcw,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { CodeLanguage, Problem } from '@/lib/types';
 import { toast } from 'sonner';
+import { useTheme } from '@/context/ThemeContext';
 
 interface IDENavbarProps {
   problem: Problem;
@@ -49,6 +52,8 @@ export function IDENavbar({
   isFullscreen,
   onToggleFullscreen,
 }: IDENavbarProps) {
+  const { theme, toggleTheme } = useTheme();
+
   const languages: { key: CodeLanguage; label: string; ext: string }[] = [
     { key: 'cpp', label: 'C++ (Clang 17)', ext: '.cpp' },
     { key: 'python', label: 'Python 3.12', ext: '.py' },
@@ -146,6 +151,20 @@ export function IDENavbar({
         >
           <Sparkles className="w-3.5 h-3.5 text-brand-400" />
           <span className="hidden sm:inline">AI Review</span>
+        </button>
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          className="p-1.5 rounded-md bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.08] text-zinc-400 hover:text-white transition-colors"
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? (
+            <Sun className="w-3.5 h-3.5 text-amber-400" />
+          ) : (
+            <Moon className="w-3.5 h-3.5 text-zinc-600" />
+          )}
         </button>
 
         {/* Fullscreen Toggle */}

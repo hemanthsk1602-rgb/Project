@@ -5,8 +5,23 @@
 @tailwind utilities;
 
 :root {
+  --background: #F8FAFC;
+  --foreground: #0F172A;
+  --surface: #FFFFFF;
+  --surface-card: #FFFFFF;
+  --surface-subtle: #F1F5F9;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.06);
+}
+
+.dark {
   --background: #090D16;
   --foreground: #F8FAFC;
+  --surface: #0B0F19;
+  --surface-card: #0E1524;
+  --surface-subtle: #080C14;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.06);
 }
 
 body {
@@ -16,29 +31,46 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 code, kbd, samp, pre {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Refined Dark Scrollbar */
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
-::-webkit-scrollbar-track {
+.dark ::-webkit-scrollbar-track {
   background: #070A10;
 }
 
-::-webkit-scrollbar-thumb {
+.dark ::-webkit-scrollbar-thumb {
   background: #1E293B;
   border-radius: 9999px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.dark ::-webkit-scrollbar-thumb:hover {
   background: #334155;
+}
+
+html.light ::-webkit-scrollbar-track,
+html:not(.dark) ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+html.light ::-webkit-scrollbar-thumb,
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover,
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
 }
 
 /* CodeArena UI utilities */
@@ -86,4 +118,174 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* =======================================================
+   LIGHT MODE DESIGN SYSTEM OVERRIDES (Clean Developer SaaS)
+   ======================================================= */
+html.light body,
+html:not(.dark) body {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+/* Primary page & surface backgrounds in light mode */
+html.light .bg-\[\#090D16\],
+html:not(.dark) .bg-\[\#090D16\] {
+  background-color: #F8FAFC !important;
+}
+html.light .bg-\[\#0B0F19\],
+html:not(.dark) .bg-\[\#0B0F19\] {
+  background-color: #FFFFFF !important;
+}
+html.light .bg-\[\#0E1524\],
+html:not(.dark) .bg-\[\#0E1524\] {
+  background-color: #F1F5F9 !important;
+}
+html.light .bg-\[\#080C14\],
+html:not(.dark) .bg-\[\#080C14\] {
+  background-color: #FFFFFF !important;
+}
+html.light .bg-\[\#05080E\],
+html:not(.dark) .bg-\[\#05080E\] {
+  background-color: #F8FAFC !important;
+}
+html.light .bg-\[\#0A0E17\],
+html:not(.dark) .bg-\[\#0A0E17\] {
+  background-color: #FFFFFF !important;
+}
+html.light .bg-\[\#070A10\],
+html:not(.dark) .bg-\[\#070A10\] {
+  background-color: #F8FAFC !important;
+}
+html.light .bg-\[\#070B13\],
+html:not(.dark) .bg-\[\#070B13\] {
+  background-color: #FFFFFF !important;
+}
+html.light .bg-\[\#06090F\],
+html:not(.dark) .bg-\[\#06090F\] {
+  background-color: #F1F5F9 !important;
+}
+html.light .bg-\[\#0D111A\],
+html:not(.dark) .bg-\[\#0D111A\] {
+  background-color: #FFFFFF !important;
+}
+html.light .bg-\[\#121A29\],
+html:not(.dark) .bg-\[\#121A29\] {
+  background-color: #E2E8F0 !important;
+}
+html.light .bg-\[\#161F30\],
+html:not(.dark) .bg-\[\#161F30\] {
+  background-color: #E2E8F0 !important;
+}
+html.light .bg-\[\#0A0D14\],
+html:not(.dark) .bg-\[\#0A0D14\] {
+  background-color: #F8FAFC !important;
+}
+
+/* Semi-transparent navbar/panels */
+html.light .bg-\[\#090D16\]\/95,
+html:not(.dark) .bg-\[\#090D16\]\/95 {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+}
+html.light .bg-\[\#090D16\]\/80,
+html:not(.dark) .bg-\[\#090D16\]\/80 {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Glass cards in light mode */
+html.light .ca-glass,
+html:not(.dark) .ca-glass {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05) !important;
+}
+html.light .ca-glass-card,
+html:not(.dark) .ca-glass-card {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Grids in light mode */
+html.light .bg-grid-pattern,
+html:not(.dark) .bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px) !important;
+}
+html.light .bg-dot-pattern,
+html:not(.dark) .bg-dot-pattern {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.09) 1px, transparent 1px) !important;
+}
+
+/* Text colors in light mode */
+html.light .text-white,
+html:not(.dark) .text-white {
+  color: #0F172A;
+}
+html.light .text-zinc-100,
+html:not(.dark) .text-zinc-100 {
+  color: #0F172A !important;
+}
+html.light .text-zinc-200,
+html:not(.dark) .text-zinc-200 {
+  color: #1E293B !important;
+}
+html.light .text-zinc-300,
+html:not(.dark) .text-zinc-300 {
+  color: #334155 !important;
+}
+html.light .text-zinc-400,
+html:not(.dark) .text-zinc-400 {
+  color: #64748B !important;
+}
+html.light .text-zinc-500,
+html:not(.dark) .text-zinc-500 {
+  color: #94A3B8 !important;
+}
+
+/* Keep white text on solid buttons & badges */
+html.light [class*="bg-brand-500"] .text-white,
+html.light [class*="bg-brand-600"] .text-white,
+html.light button[class*="bg-brand-"] span,
+html.light button[class*="bg-brand-"],
+html.light a[class*="bg-brand-"] span,
+html.light a[class*="bg-brand-"],
+html.light [class*="bg-rose-500"] .text-white,
+html.light [class*="bg-emerald-500"] .text-white,
+html.light .keep-white,
+html:not(.dark) [class*="bg-brand-500"] .text-white,
+html:not(.dark) [class*="bg-brand-600"] .text-white,
+html:not(.dark) button[class*="bg-brand-"] span,
+html:not(.dark) button[class*="bg-brand-"],
+html:not(.dark) a[class*="bg-brand-"] span,
+html:not(.dark) a[class*="bg-brand-"],
+html:not(.dark) [class*="bg-rose-500"] .text-white,
+html:not(.dark) [class*="bg-emerald-500"] .text-white,
+html:not(.dark) .keep-white {
+  color: #FFFFFF !important;
+}
+
+/* White borders -> subtle dark borders */
+html.light [class*="border-white"],
+html:not(.dark) [class*="border-white"] {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+html.light [class*="bg-white\/\[0\.0"],
+html:not(.dark) [class*="bg-white\/\[0\.0"] {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+html.light [class*="hover\:bg-white\/"]:hover,
+html:not(.dark) [class*="hover\:bg-white\/"]:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+html.light .bg-zinc-800,
+html:not(.dark) .bg-zinc-800 {
+  background-color: #E2E8F0 !important;
+  color: #334155 !important;
+}
+html.light .border-zinc-700,
+html:not(.dark) .border-zinc-700 {
+  border-color: #CBD5E1 !important;
 }
