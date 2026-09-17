@@ -289,3 +289,66 @@ html.light .border-zinc-700,
 html:not(.dark) .border-zinc-700 {
   border-color: #CBD5E1 !important;
 }
+
+/* =======================================================
+   MOTION & MICRO-INTERACTION PRIMITIVES
+   ======================================================= */
+@keyframes grid-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 32px 32px; }
+}
+
+.animate-grid-drift {
+  animation: grid-drift 32s linear infinite;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+@keyframes glow-drift {
+  0%, 100% { transform: translate(0px, 0px) scale(1); opacity: 0.25; }
+  33% { transform: translate(25px, -15px) scale(1.06); opacity: 0.32; }
+  66% { transform: translate(-15px, 15px) scale(0.96); opacity: 0.22; }
+}
+
+.animate-glow-drift {
+  animation: glow-drift 18s ease-in-out infinite;
+}
+
+/* Micro-interaction feedback utilities */
+.interactive-hover {
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.interactive-hover:hover {
+  transform: translateY(-1px);
+}
+
+.interactive-hover:active {
+  transform: scale(0.98);
+}
+
+/* Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

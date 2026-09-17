@@ -68,17 +68,22 @@ export default function PracticeIDEPage() {
     }));
   };
 
+  const [isFormatting, setIsFormatting] = useState(false);
+
   // Prettier-style formatting action (Shift + Alt + F)
-  const handleFormatCode = () => {
+  const handleFormatCode = async () => {
+    setIsFormatting(true);
+    await new Promise((r) => setTimeout(r, 160));
     const { formatted, changed } = formatCode(currentCode, language);
+    setIsFormatting(false);
     if (changed) {
       handleCodeChange(formatted);
       toast.success('✓ Code formatted', {
-        description: `Indentation and braces standardized for ${language.toUpperCase()}`,
+        description: `Prettier standardized formatting for ${language.toUpperCase()}`,
         duration: 2000,
       });
     } else {
-      toast.info('Code is already formatted', { duration: 1500 });
+      toast.info('Document is already formatted', { duration: 1500 });
     }
   };
 
@@ -226,6 +231,7 @@ export default function PracticeIDEPage() {
         onResetCode={handleResetCode}
         isRunning={isRunning}
         isSubmitting={isSubmitting}
+        isFormatting={isFormatting}
         onToggleAiDrawer={() => setIsAiDrawerOpen(!isAiDrawerOpen)}
         isAiDrawerOpen={isAiDrawerOpen}
         isFullscreen={isFullscreen}

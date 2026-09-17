@@ -15,7 +15,8 @@ import {
   CheckCircle2,
   RotateCcw,
   Sun,
-  Moon
+  Moon,
+  Loader2
 } from 'lucide-react';
 import { CodeLanguage, Problem } from '@/lib/types';
 import { toast } from 'sonner';
@@ -31,6 +32,7 @@ interface IDENavbarProps {
   onResetCode: () => void;
   isRunning: boolean;
   isSubmitting: boolean;
+  isFormatting?: boolean;
   onToggleAiDrawer: () => void;
   isAiDrawerOpen: boolean;
   isFullscreen: boolean;
@@ -47,6 +49,7 @@ export function IDENavbar({
   onResetCode,
   isRunning,
   isSubmitting,
+  isFormatting = false,
   onToggleAiDrawer,
   isAiDrawerOpen,
   isFullscreen,
@@ -117,11 +120,16 @@ export function IDENavbar({
         {/* Format Code Button (Shift+Alt+F) */}
         <button
           onClick={onFormatCode}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.08] text-xs text-zinc-300 transition-colors"
+          disabled={isFormatting}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.08] text-xs text-zinc-300 transition-colors disabled:opacity-60"
           title="Format Code (Shift + Alt + F)"
         >
-          <AlignLeft className="w-3.5 h-3.5 text-zinc-400" />
-          <span className="hidden md:inline">Format</span>
+          {isFormatting ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-400" />
+          ) : (
+            <AlignLeft className="w-3.5 h-3.5 text-zinc-400" />
+          )}
+          <span className="hidden md:inline">{isFormatting ? 'Formatting...' : 'Format'}</span>
           <kbd className="hidden lg:inline-block text-[9px] px-1 py-0.2 rounded bg-zinc-800 border border-zinc-700 text-zinc-400 font-mono">
             ⇧⌥F
           </kbd>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
 import { CodeLanguage, AIReviewResult } from '@/lib/types';
@@ -95,10 +96,19 @@ public:
 
   const [code, setCode] = useState<string>(samplePresets.bruteTwoSum.code);
   const [analyzing, setAnalyzing] = useState<boolean>(false);
+  const [analyzingStep, setAnalyzingStep] = useState<number>(0);
   const [result, setResult] = useState<AIReviewResult | null>(() => 
     analyzeCodeLocally(samplePresets.bruteTwoSum.code, 'cpp')
   );
   const [copied, setCopied] = useState<boolean>(false);
+
+  const reviewSteps = [
+    { title: 'Analyzing code structure & AST', desc: 'Parsing symbol tables and syntax tree' },
+    { title: 'Checking complexity bounds', desc: 'Evaluating nested loops and recursion depth' },
+    { title: 'Checking readability & patterns', desc: 'Auditing variable naming and cognitive complexity' },
+    { title: 'Checking edge cases & guards', desc: 'Verifying null, empty array, and integer overflow' },
+    { title: 'Review complete', desc: 'Synthesizing benchmark score and optimal refactor' },
+  ];
 
   const handlePresetSelect = (presetKey: string) => {
     const p = samplePresets[presetKey];
@@ -110,11 +120,17 @@ public:
 
   const handleRunAnalysis = async () => {
     setAnalyzing(true);
-    await new Promise((res) => setTimeout(res, 400));
+    setResult(null);
+
+    for (let i = 0; i < reviewSteps.length; i++) {
+      setAnalyzingStep(i);
+      await new Promise((res) => setTimeout(res, 260));
+    }
+
     const res = analyzeCodeLocally(code, language);
     setResult(res);
     setAnalyzing(false);
-    toast.success('Code intelligence analysis completed');
+    toast.success('Code intelligence review completed');
   };
 
   const handleCopyOptimized = () => {
@@ -246,10 +262,73 @@ public:
 
             {/* Content Area */}
             <div className="flex-1 overflow-y-auto p-5 space-y-5">
-              {result ? (
-                <>
-                  {/* Top Score & Verdict Card */}
-                  <div className="p-4 rounded-xl bg-[#070B13] border border-white/[0.08] flex items-center justify-between">
+              {analyzing ? (
+                <div className="py-10 px-2 max-w-md mx-auto space-y-5">
+                  <div className="text-center space-y-1.5">
+                    <div className="w-10 h-10 rounded-full bg-brand-500/10 border border-brand-500/20 flex items-center justify-center mx-auto text-brand-400">
+                      <Sparkles className="w-5 h-5 animate-spin" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-white font-sans">
+                      Algorithmic Analysis in Progress
+                    </h3>
+                    <p className="text-xs text-zinc-500 font-mono">
+                      Evaluating code semantics & Big-O invariants
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    {reviewSteps.map((step, idx) => {
+                      const isDone = analyzingStep > idx;
+                      const isCurrent = analyzingStep === idx;
+                      return (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, x: -6 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className={`p-3 rounded-lg border flex items-center justify-between text-xs transition-all ${
+                            isCurrent
+                              ? 'bg-brand-500/10 border-brand-500/35 text-white shadow-sm'
+                              : isDone
+                              ? 'bg-emerald-500/5 border-emerald-500/20 text-zinc-300'
+                              : 'bg-white/[0.02] border-white/[0.05] text-zinc-600 opacity-60'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            {isDone ? (
+                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                            ) : isCurrent ? (
+                              <RefreshCw className="w-4 h-4 text-brand-400 animate-spin shrink-0" />
+                            ) : (
+                              <div className="w-4 h-4 rounded-full border border-zinc-700 shrink-0" />
+                            )}
+                            <div>
+                              <div className={`font-medium ${isCurrent ? 'text-white' : ''}`}>{step.title}</div>
+                              <div className="text-[10px] text-zinc-500">{step.desc}</div>
+                            </div>
+                          </div>
+                          <span className="font-mono text-[10px] text-zinc-500">
+                            {isDone ? 'PASS' : isCurrent ? 'RUNNING' : 'WAIT'}
+                          </span>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : result ? (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-5"
+                >
+                  {/* Top Score & Verdict Card with Stagger */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35 }}
+                    className="p-4 rounded-xl bg-[#070B13] border border-white/[0.08] flex items-center justify-between"
+                  >
                     <div>
                       <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500">
                         Overall Engineering Score
@@ -274,10 +353,15 @@ public:
                         Readability: <span className="text-white font-semibold">{result.readabilityScore}%</span>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
 
                   {/* Asymptotic Complexity Transition */}
-                  <div className="p-3.5 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2 font-mono text-xs">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.08 }}
+                    className="p-3.5 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2 font-mono text-xs"
+                  >
                     <span className="text-[10px] text-zinc-500 uppercase tracking-wider block font-sans">
                       Asymptotic Transition
                     </span>
@@ -302,7 +386,7 @@ public:
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
 
                   {/* Summary */}
                   <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.06] text-xs text-zinc-300 leading-relaxed">
@@ -311,7 +395,12 @@ public:
 
                   {/* Detected Bottlenecks & Issues */}
                   {result.issues.length > 0 && (
-                    <div className="space-y-2">
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, delay: 0.16 }}
+                      className="space-y-2"
+                    >
                       <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider font-mono">
                         Identified Bottlenecks ({result.issues.length})
                       </span>
@@ -329,7 +418,7 @@ public:
                           </p>
                         </div>
                       ))}
-                    </div>
+                    </motion.div>
                   )}
 
                   {/* Strengths */}
@@ -349,8 +438,13 @@ public:
                     </div>
                   )}
 
-                  {/* Optimal Refactor */}
-                  <div className="space-y-2 pt-2 border-t border-white/[0.06]">
+                  {/* Optimal Refactor with Animation */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.24 }}
+                    className="space-y-2 pt-2 border-t border-white/[0.06]"
+                  >
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider font-mono">
                         Optimal Asymptotic Refactor
@@ -371,11 +465,11 @@ public:
                     <p className="text-[11px] text-zinc-500 italic">
                       {result.optimizationRationale}
                     </p>
-                  </div>
-                </>
+                  </motion.div>
+                </motion.div>
               ) : (
                 <div className="py-20 text-center text-zinc-500 text-xs">
-                  Click "Run Review" to generate full asymptotic evaluation.
+                  Click &quot;Run Review&quot; to generate full asymptotic evaluation.
                 </div>
               )}
             </div>

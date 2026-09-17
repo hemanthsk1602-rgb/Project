@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { 
   Code2, 
   Map, 
@@ -76,25 +77,41 @@ export default function HomePage() {
             SECTION 1: CINEMATIC HERO (Expanded Whitespace & Breathing Room)
            ========================================================================= */}
         <section className="relative pt-16 pb-28 lg:pt-24 lg:pb-36 border-b border-white/[0.06] overflow-hidden">
-          {/* Subtle Ambient Radial Glow — Restrained, non-neon */}
-          <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-brand-500/[0.04] blur-[150px] pointer-events-none rounded-full" />
+          {/* Animated Background Grid Pattern */}
+          <div className="absolute inset-0 bg-grid-pattern animate-grid-drift opacity-30 pointer-events-none" />
+
+          {/* Subtle Ambient Radial Glow — Moving gently */}
+          <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-brand-500/[0.06] blur-[140px] pointer-events-none rounded-full animate-glow-drift" />
+
+          {/* Floating subtle data point chips */}
+          <div className="hidden lg:block absolute top-20 right-16 px-2.5 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-[10px] font-mono text-brand-300 animate-float-slow select-none">
+            {'// Optimal O(n) Asymptotics'}
+          </div>
+          <div className="hidden lg:block absolute bottom-24 left-10 px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-[10px] font-mono text-zinc-500 animate-float-slow select-none [animation-delay:2s]">
+            {'const lookup = new Map();'}
+          </div>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-12 items-center">
-              {/* Left Column: Headline & Action */}
-              <div className="lg:col-span-6 space-y-8">
+              {/* Left Column: Headline & Action with Stagger Reveal */}
+              <motion.div 
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                className="lg:col-span-6 space-y-8"
+              >
                 {/* Product Badge */}
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-zinc-400 text-xs font-mono">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse" />
                   <span>Developer Practice & Intelligence</span>
                 </div>
 
-                {/* Main Headline */}
+                {/* Main Headline with Smooth Line Reveal */}
                 <div className="space-y-4">
                   <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.08] font-sans">
                     MASTER YOUR <br />
                     PROBLEM <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 via-zinc-300 to-zinc-500">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 via-brand-200 to-indigo-300">
                       SOLVING.
                     </span>
                   </h1>
@@ -104,23 +121,27 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                {/* Primary vs Secondary CTAs */}
+                {/* Primary vs Secondary CTAs with Micro-Interactions */}
                 <div className="flex flex-wrap items-center gap-4 pt-2">
-                  <Link
-                    href="/practice/two-sum"
-                    className="flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs tracking-wide shadow-glow-brand transition-all duration-150 hover:-translate-y-0.5"
-                  >
-                    <Play className="w-3.5 h-3.5 fill-white" />
-                    <span>START CODING</span>
-                  </Link>
+                  <motion.div whileHover={{ scale: 1.03, y: -1 }} whileTap={{ scale: 0.97 }}>
+                    <Link
+                      href="/practice/two-sum"
+                      className="flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs tracking-wide shadow-glow-brand transition-colors"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-white" />
+                      <span>START CODING</span>
+                    </Link>
+                  </motion.div>
 
-                  <Link
-                    href="/problems"
-                    className="flex items-center gap-2 px-6 py-3.5 rounded-lg bg-transparent hover:bg-white/[0.04] text-zinc-300 font-medium text-xs tracking-wide border border-white/[0.12] transition-colors"
-                  >
-                    <span>EXPLORE PROBLEMS</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-zinc-500" />
-                  </Link>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Link
+                      href="/problems"
+                      className="flex items-center gap-2 px-6 py-3.5 rounded-lg bg-transparent hover:bg-white/[0.04] text-zinc-300 font-medium text-xs tracking-wide border border-white/[0.12] transition-colors"
+                    >
+                      <span>EXPLORE PROBLEMS</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-zinc-500" />
+                    </Link>
+                  </motion.div>
                 </div>
 
                 {/* Trust & Metric Pill */}
@@ -137,18 +158,23 @@ export default function HomePage() {
                     <span className="text-zinc-200 font-semibold font-mono">O(n)</span> Asymptotics
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Right Column: Refined Hero Code Editor Window */}
-              <div className="lg:col-span-6">
-                <div className="rounded-xl bg-[#080C14] border border-white/[0.1] shadow-2xl overflow-hidden">
+              {/* Right Column: Refined Hero Code Editor Window with Motion */}
+              <motion.div 
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.65, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                className="lg:col-span-6"
+              >
+                <div className="rounded-xl bg-[#080C14] border border-white/[0.1] shadow-2xl overflow-hidden hover:border-white/[0.16] transition-colors">
                   {/* Editor Window Bar */}
                   <div className="h-10 bg-[#060910] border-b border-white/[0.07] px-4 flex items-center justify-between select-none">
                     <div className="flex items-center gap-2.5">
                       <div className="flex items-center gap-1.5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-700/80" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-700/80" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-700/80" />
                       </div>
                       <span className="text-xs text-zinc-400 font-mono ml-2 font-medium">
                         two-sum.{activeCodeLang === 'cpp' ? 'cpp' : 'py'}
@@ -179,22 +205,28 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Code Editor Body */}
+                  {/* Code Editor Body with Progressive Reveal */}
                   <div className="p-4 font-mono text-[12px] bg-[#080C14] leading-relaxed overflow-x-auto min-h-[320px]">
                     <div className="space-y-0.5">
-                      {currentLines.map((line) => (
-                        <div key={line.num} className="flex items-baseline gap-4 hover:bg-white/[0.02] px-1 rounded">
-                          <span className="w-6 text-right text-zinc-600 text-[11px] select-none shrink-0 font-mono">
+                      {currentLines.map((line, idx) => (
+                        <motion.div 
+                          key={`${activeCodeLang}-${line.num}`}
+                          initial={{ opacity: 0, x: -4 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.2, delay: Math.min(idx * 0.02, 0.3) }}
+                          className="flex items-baseline gap-4 hover:bg-white/[0.03] px-1 rounded transition-colors group"
+                        >
+                          <span className="w-6 text-right text-zinc-600 text-[11px] select-none shrink-0 font-mono group-hover:text-zinc-400">
                             {line.num}
                           </span>
                           <span className={`whitespace-pre ${line.color}`}>
                             {line.text}
                           </span>
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
 
-                    {/* Subtle Cursor */}
+                    {/* Subtle Blinking Cursor */}
                     <div className="flex items-center gap-4 px-1 mt-1">
                       <span className="w-6 text-right text-zinc-600 text-[11px] font-mono select-none">
                         {currentLines.length + 1}
@@ -218,7 +250,7 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </section>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
 import { AITutorMessage } from '@/lib/types';
@@ -17,7 +18,8 @@ import {
   ArrowRight, 
   CheckCircle2,
   ListFilter,
-  Check
+  Check,
+  Copy
 } from 'lucide-react';
 
 export default function AITutorPage() {
@@ -241,8 +243,11 @@ Let's develop your intuition. Where would you like to begin?`,
             {/* Messages Thread */}
             <div className="flex-1 p-5 overflow-y-auto space-y-4">
               {messages.map((msg) => (
-                <div
+                <motion.div
                   key={msg.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
                   className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {msg.role === 'assistant' && (
@@ -263,7 +268,7 @@ Let's develop your intuition. Where would you like to begin?`,
                     </div>
 
                     {msg.codeSnippet && (
-                      <div className="p-3 rounded-lg bg-[#030508] border border-white/[0.08] font-mono text-[11px] text-zinc-200 overflow-x-auto">
+                      <div className="p-3 rounded-lg bg-[#030508] border border-white/[0.08] font-mono text-[11px] text-zinc-200 overflow-x-auto relative group">
                         <pre>
                           <code>{msg.codeSnippet}</code>
                         </pre>
@@ -277,28 +282,39 @@ Let's develop your intuition. Where would you like to begin?`,
                         </span>
                         <div className="flex flex-wrap gap-1.5">
                           {msg.followUpSuggestions.map((sug, i) => (
-                            <button
+                            <motion.button
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
                               key={i}
                               onClick={() => handleSendMessage(sug)}
                               className="px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 hover:text-white text-[11px] border border-white/[0.06] transition-colors"
                             >
                               {sug}
-                            </button>
+                            </motion.button>
                           ))}
                         </div>
                       </div>
                     )}
                   </div>
-                </div>
+                </motion.div>
               ))}
 
               {loading && (
-                <div className="flex items-center gap-3 text-xs text-zinc-500">
-                  <div className="w-8 h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 animate-spin" />
+                <motion.div 
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-3 text-xs text-zinc-400"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center shrink-0">
+                    <Bot className="w-4 h-4" />
                   </div>
-                  <span className="font-mono">Tutor is structuring concept...</span>
-                </div>
+                  <div className="flex items-center gap-1.5 p-3 rounded-xl bg-[#060910] border border-white/[0.07]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-bounce" />
+                    <span className="font-mono text-[11px] text-zinc-500 ml-2">Structuring Socratic guidance...</span>
+                  </div>
+                </motion.div>
               )}
             </div>
 

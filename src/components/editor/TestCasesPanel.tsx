@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ExecutionResult, Problem, TestCase } from '@/lib/types';
 import { 
   CheckCircle2, 
@@ -12,7 +13,8 @@ import {
   ChevronUp, 
   ChevronDown,
   Plus,
-  Play
+  Play,
+  Loader2
 } from 'lucide-react';
 
 interface TestCasesPanelProps {
@@ -136,37 +138,62 @@ export function TestCasesPanel({
                 })}
               </div>
 
-              {/* Execution Status Banner */}
-              {executionResult && (
-                <div
-                  className={`p-2 rounded border flex items-center justify-between ${
-                    executionResult.status === 'Accepted'
-                      ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
-                      : 'bg-rose-500/10 border-rose-500/20 text-rose-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {executionResult.status === 'Accepted' ? (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    ) : (
-                      <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-                    )}
-                    <span className="font-bold">{executionResult.status}</span>
-                    <span className="text-zinc-400 font-sans text-xs">
-                      ({executionResult.totalPassed}/{executionResult.totalCases} cases passed)
+              {/* Running State Animation */}
+              <AnimatePresence>
+                {isRunning && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="p-2.5 rounded-lg bg-brand-500/10 border border-brand-500/25 flex items-center justify-between overflow-hidden"
+                  >
+                    <div className="flex items-center gap-2 text-xs text-brand-300">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-400" />
+                      <span>Executing test cases against deterministic sandbox...</span>
+                    </div>
+                    <span className="text-[11px] font-mono text-zinc-500 animate-pulse">
+                      Running assertions
                     </span>
-                  </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-                  <div className="flex items-center gap-3 text-[11px] text-zinc-400 font-mono">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {executionResult.executionTimeMs}ms
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Cpu className="w-3 h-3" /> {executionResult.memoryMb} MB
-                    </span>
-                  </div>
-                </div>
-              )}
+              {/* Execution Status Banner with Spring Reveal */}
+              <AnimatePresence>
+                {executionResult && !isRunning && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.98, y: 4 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    className={`p-2 rounded border flex items-center justify-between ${
+                      executionResult.status === 'Accepted'
+                        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300'
+                        : 'bg-rose-500/10 border-rose-500/20 text-rose-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      {executionResult.status === 'Accepted' ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                      )}
+                      <span className="font-bold">{executionResult.status}</span>
+                      <span className="text-zinc-400 font-sans text-xs">
+                        ({executionResult.totalPassed}/{executionResult.totalCases} cases passed)
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-[11px] text-zinc-400 font-mono">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> {executionResult.executionTimeMs}ms
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Cpu className="w-3 h-3" /> {executionResult.memoryMb} MB
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Current Case Details */}
               {currentCase && (

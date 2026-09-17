@@ -2,32 +2,27 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { CURRENT_USER_PROFILE, AI_RECOMMENDED_STUDY_PLAN } from '@/data/demo/profile';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
+import { CountUp } from '@/components/motion/CountUp';
 import { 
   BarChart3, 
   Sparkles, 
-  CheckCircle2, 
-  Clock, 
   Flame, 
-  TrendingUp, 
-  Target, 
-  ArrowRight,
-  Code2,
-  Calendar,
-  AlertTriangle
+  ArrowRight, 
+  Calendar 
 } from 'lucide-react';
 
 export default function AnalyticsPage() {
   const profile = CURRENT_USER_PROFILE;
   const plan = AI_RECOMMENDED_STUDY_PLAN;
 
-  // Heatmap generation (12 weeks of simulated activity)
+  // Heatmap generation (16 weeks of simulated activity)
   const heatmapWeeks = Array.from({ length: 16 }, (_, w) => 
     Array.from({ length: 7 }, (_, d) => {
-      // higher activity on recent weeks
-      const rand = Math.random();
+      const rand = Math.sin(w * 0.5 + d * 0.3) * 0.5 + 0.5;
       const level = rand > 0.7 ? 3 : rand > 0.4 ? 2 : rand > 0.2 ? 1 : 0;
       return { level };
     })
@@ -62,46 +57,66 @@ export default function AnalyticsPage() {
 
         {/* Top Key Metrics Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
+          >
             <span className="text-xs text-zinc-400 font-mono">Problems Solved</span>
             <div className="text-3xl font-bold font-mono text-white">
-              {profile.solvedStats.total}
+              <CountUp value={profile.solvedStats.total} duration={1.1} />
             </div>
             <div className="text-[11px] text-zinc-500 font-mono">
               Top 6% across platform
             </div>
-          </div>
+          </motion.div>
 
-          <div className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.05 }}
+            className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
+          >
             <span className="text-xs text-zinc-400 font-mono">First-Pass Accuracy</span>
             <div className="text-3xl font-bold font-mono text-emerald-400">
-              {profile.accuracy}%
+              <CountUp value={profile.accuracy} suffix="%" decimals={1} duration={1.1} />
             </div>
             <div className="text-[11px] text-zinc-500 font-mono">
               +4.2% from previous month
             </div>
-          </div>
+          </motion.div>
 
-          <div className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
+          >
             <span className="text-xs text-zinc-400 font-mono">Average Solve Time</span>
             <div className="text-3xl font-bold font-mono text-brand-400">
-              18.5m
+              <CountUp value={18.5} suffix="m" decimals={1} duration={1.1} />
             </div>
             <div className="text-[11px] text-zinc-500 font-mono">
               Medium difficulty benchmark
             </div>
-          </div>
+          </motion.div>
 
-          <div className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.15 }}
+            className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
+          >
             <span className="text-xs text-zinc-400 font-mono">Consecutive Streak</span>
             <div className="text-3xl font-bold font-mono text-amber-400 flex items-center gap-1.5">
-              <span>{profile.streak}</span>
+              <CountUp value={profile.streak} duration={1.1} />
               <Flame className="w-5 h-5 fill-amber-400" />
             </div>
             <div className="text-[11px] text-zinc-500 font-mono">
               Active daily problem solver
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Section 1: Difficulty Distribution & Language Proficiency */}
@@ -119,7 +134,12 @@ export default function AnalyticsPage() {
                   <span className="text-zinc-400">{profile.solvedStats.easy} / 200 Solved (84%)</span>
                 </div>
                 <div className="h-2 w-full bg-white/[0.05] rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-400 rounded-full" style={{ width: '84%' }} />
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: '84%' }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="h-full bg-emerald-400 rounded-full"
+                  />
                 </div>
               </div>
 
@@ -129,7 +149,12 @@ export default function AnalyticsPage() {
                   <span className="text-zinc-400">{profile.solvedStats.medium} / 350 Solved (60.5%)</span>
                 </div>
                 <div className="h-2 w-full bg-white/[0.05] rounded-full overflow-hidden">
-                  <div className="h-full bg-amber-400 rounded-full" style={{ width: '60.5%' }} />
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: '60.5%' }}
+                    transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    className="h-full bg-amber-400 rounded-full"
+                  />
                 </div>
               </div>
 
@@ -139,7 +164,12 @@ export default function AnalyticsPage() {
                   <span className="text-zinc-400">{profile.solvedStats.hard} / 120 Solved (40%)</span>
                 </div>
                 <div className="h-2 w-full bg-white/[0.05] rounded-full overflow-hidden">
-                  <div className="h-full bg-rose-400 rounded-full" style={{ width: '40%' }} />
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: '40%' }}
+                    transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="h-full bg-rose-400 rounded-full"
+                  />
                 </div>
               </div>
             </div>
@@ -152,16 +182,18 @@ export default function AnalyticsPage() {
             </h2>
 
             <div className="space-y-4">
-              {profile.languages.map((lang) => (
+              {profile.languages.map((lang, idx) => (
                 <div key={lang.language}>
                   <div className="flex items-center justify-between text-xs font-mono mb-1.5">
                     <span className="text-zinc-200 font-medium">{lang.language}</span>
                     <span className="text-zinc-400">{lang.problemsSolved} solutions ({lang.percentage}%)</span>
                   </div>
                   <div className="h-2 w-full bg-white/[0.05] rounded-full overflow-hidden">
-                    <div
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${lang.percentage}%` }}
+                      transition={{ duration: 0.8, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
                       className="h-full bg-brand-500 rounded-full"
-                      style={{ width: `${lang.percentage}%` }}
                     />
                   </div>
                 </div>
@@ -182,14 +214,15 @@ export default function AnalyticsPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {profile.topicMastery.map((topic) => {
+            {profile.topicMastery.map((topic, idx) => {
               const isHigh = topic.mastery >= 75;
               const isLow = topic.mastery < 50;
 
               return (
-                <div
+                <motion.div
                   key={topic.topic}
-                  className="p-3.5 rounded-lg bg-[#070A13] border border-white/[0.06] space-y-2"
+                  whileHover={{ y: -2 }}
+                  className="p-3.5 rounded-lg bg-[#070A13] border border-white/[0.06] space-y-2 transition-colors hover:border-white/[0.12]"
                 >
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-zinc-200 truncate">{topic.topic}</span>
@@ -202,17 +235,19 @@ export default function AnalyticsPage() {
                     </span>
                   </div>
                   <div className="h-1.5 w-full bg-white/[0.04] rounded-full overflow-hidden">
-                    <div
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${topic.mastery}%` }}
+                      transition={{ duration: 0.7, delay: idx * 0.04, ease: [0.16, 1, 0.3, 1] }}
                       className={`h-full rounded-full ${
                         isHigh ? 'bg-emerald-400' : isLow ? 'bg-rose-400' : 'bg-amber-400'
                       }`}
-                      style={{ width: `${topic.mastery}%` }}
                     />
                   </div>
                   <div className="text-[11px] text-zinc-500 font-mono">
                     {topic.solved} of {topic.total} Solved
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -234,20 +269,23 @@ export default function AnalyticsPage() {
               </p>
             </div>
 
-            <Link
-              href="/roadmap"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs transition-colors shadow-glow-brand shrink-0"
-            >
-              <span>Follow in Roadmap</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Link
+                href="/roadmap"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-semibold text-xs transition-colors shadow-glow-brand shrink-0"
+              >
+                <span>Follow in Roadmap</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </motion.div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-3">
-            {plan.planDays.map((day, idx) => (
-              <div
+            {plan.planDays.map((day) => (
+              <motion.div
                 key={day.day}
-                className="p-3.5 rounded-xl bg-[#070B13] border border-white/[0.08] space-y-2 flex flex-col justify-between"
+                whileHover={{ y: -3, scale: 1.01 }}
+                className="p-3.5 rounded-xl bg-[#070B13] border border-white/[0.08] space-y-2 flex flex-col justify-between transition-colors hover:border-brand-500/40"
               >
                 <div>
                   <span className="text-[11px] font-mono font-bold text-brand-400 block mb-1">
@@ -260,7 +298,7 @@ export default function AnalyticsPage() {
                 <div className="text-[10px] text-zinc-400 italic pt-2 border-t border-white/[0.04]">
                   {day.keyInsight}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -296,9 +334,11 @@ export default function AnalyticsPage() {
                         ? 'bg-brand-900/60'
                         : 'bg-zinc-800/60';
                     return (
-                      <div
+                      <motion.div
                         key={dIdx}
-                        className={`w-3.5 h-3.5 rounded-sm ${color} hover:ring-1 hover:ring-white transition-all`}
+                        whileHover={{ scale: 1.35 }}
+                        transition={{ duration: 0.12 }}
+                        className={`w-3.5 h-3.5 rounded-sm ${color} hover:ring-1 hover:ring-white transition-colors cursor-pointer`}
                         title={`Activity level: ${day.level}`}
                       />
                     );
@@ -314,4 +354,3 @@ export default function AnalyticsPage() {
     </div>
   );
 }
-

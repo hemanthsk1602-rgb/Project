@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import { DEMO_PROBLEMS } from '@/data/demo/problems';
 import { Difficulty, Problem } from '@/lib/types';
 import { Navbar } from '@/components/navigation/Navbar';
@@ -143,25 +144,44 @@ export default function ProblemsPage() {
               )}
             </div>
 
-            {/* Difficulty Filter */}
+            {/* Difficulty Filter with Animated Pill */}
             <div className="flex items-center gap-1 bg-[#0C111C] border border-white/[0.08] p-1 rounded-lg">
               {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => (
                 <button
                   key={diff}
                   onClick={() => setSelectedDifficulty(diff)}
-                  className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                  className={`relative px-3 py-1 rounded text-xs font-medium transition-colors ${
                     selectedDifficulty === diff
-                      ? diff === 'Easy'
-                        ? 'bg-emerald-500/20 text-emerald-400 font-semibold'
-                        : diff === 'Medium'
-                        ? 'bg-amber-500/20 text-amber-400 font-semibold'
-                        : diff === 'Hard'
-                        ? 'bg-rose-500/20 text-rose-400 font-semibold'
-                        : 'bg-white/10 text-white font-semibold'
+                      ? 'text-white font-semibold'
                       : 'text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
-                  {diff}
+                  {selectedDifficulty === diff && (
+                    <motion.div
+                      layoutId="problems-diff-pill"
+                      className={`absolute inset-0 rounded ${
+                        diff === 'Easy'
+                          ? 'bg-emerald-500/20 border border-emerald-500/40'
+                          : diff === 'Medium'
+                          ? 'bg-amber-500/20 border border-amber-500/40'
+                          : diff === 'Hard'
+                          ? 'bg-rose-500/20 border border-rose-500/40'
+                          : 'bg-white/10 border border-white/15'
+                      }`}
+                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className={`relative z-10 ${
+                    selectedDifficulty === diff && diff === 'Easy'
+                      ? 'text-emerald-400'
+                      : selectedDifficulty === diff && diff === 'Medium'
+                      ? 'text-amber-400'
+                      : selectedDifficulty === diff && diff === 'Hard'
+                      ? 'text-rose-400'
+                      : ''
+                  }`}>
+                    {diff}
+                  </span>
                 </button>
               ))}
             </div>
@@ -172,31 +192,45 @@ export default function ProblemsPage() {
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
-                  className={`px-3 py-1 rounded text-xs capitalize transition-colors ${
+                  className={`relative px-3 py-1 rounded text-xs capitalize transition-colors ${
                     statusFilter === st
-                      ? 'bg-white/10 text-white font-semibold'
+                      ? 'text-white font-semibold'
                       : 'text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
-                  {st}
+                  {statusFilter === st && (
+                    <motion.div
+                      layoutId="problems-status-pill"
+                      className="absolute inset-0 rounded bg-white/10 border border-white/15"
+                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative z-10">{st}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Category Quick Selector Chips */}
+          {/* Category Quick Selector Chips with Motion Pill */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 rounded-full text-xs whitespace-nowrap transition-colors border ${
+                className={`relative px-3 py-1 rounded-full text-xs whitespace-nowrap transition-colors border ${
                   selectedCategory === cat
-                    ? 'bg-brand-500/20 text-brand-300 border-brand-500/40 font-medium'
+                    ? 'border-brand-500/40 text-brand-300 font-medium'
                     : 'bg-white/[0.02] text-zinc-400 border-white/[0.06] hover:bg-white/[0.05] hover:text-zinc-200'
                 }`}
               >
-                {cat}
+                {selectedCategory === cat && (
+                  <motion.div
+                    layoutId="problems-cat-pill"
+                    className="absolute inset-0 rounded-full bg-brand-500/20"
+                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                  />
+                )}
+                <span className="relative z-10">{cat}</span>
               </button>
             ))}
           </div>
@@ -243,83 +277,92 @@ export default function ProblemsPage() {
               </thead>
 
               <tbody className="divide-y divide-white/[0.04]">
-                {filteredProblems.map((problem) => {
-                  const diffColor =
-                    problem.difficulty === 'Easy'
-                      ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
-                      : problem.difficulty === 'Medium'
-                      ? 'text-amber-400 border-amber-500/30 bg-amber-500/10'
-                      : 'text-rose-400 border-rose-500/30 bg-rose-500/10';
+                <AnimatePresence mode="popLayout">
+                  {filteredProblems.map((problem, idx) => {
+                    const diffColor =
+                      problem.difficulty === 'Easy'
+                        ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
+                        : problem.difficulty === 'Medium'
+                        ? 'text-amber-400 border-amber-500/30 bg-amber-500/10'
+                        : 'text-rose-400 border-rose-500/30 bg-rose-500/10';
 
-                  return (
-                    <tr
-                      key={problem.id}
-                      className="hover:bg-white/[0.03] transition-colors group"
-                    >
-                      {/* Status Icon */}
-                      <td className="py-3.5 px-4 text-center">
-                        {problem.solved ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-400 mx-auto" />
-                        ) : (
-                          <Circle className="w-3.5 h-3.5 text-zinc-600 mx-auto" />
-                        )}
-                      </td>
+                    return (
+                      <motion.tr
+                        key={problem.id}
+                        layout
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        transition={{ duration: 0.22, delay: Math.min(idx * 0.02, 0.2) }}
+                        className="hover:bg-white/[0.03] transition-colors group"
+                      >
+                        {/* Status Icon */}
+                        <td className="py-3.5 px-4 text-center">
+                          {problem.solved ? (
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400 mx-auto" />
+                          ) : (
+                            <Circle className="w-3.5 h-3.5 text-zinc-600 mx-auto" />
+                          )}
+                        </td>
 
-                      {/* Title & Tags */}
-                      <td className="py-3.5 px-4">
-                        <Link
-                          href={`/practice/${problem.slug}`}
-                          className="font-medium text-zinc-200 group-hover:text-white transition-colors font-sans text-sm block"
-                        >
-                          {problem.title}
-                        </Link>
-                        <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                          {problem.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="text-[10px] px-1.5 py-0.2 rounded bg-white/[0.04] text-zinc-500 font-mono"
+                        {/* Title & Tags */}
+                        <td className="py-3.5 px-4">
+                          <Link
+                            href={`/practice/${problem.slug}`}
+                            className="font-medium text-zinc-200 group-hover:text-brand-300 transition-colors font-sans text-sm block"
+                          >
+                            {problem.title}
+                          </Link>
+                          <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                            {problem.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-[10px] px-1.5 py-0.2 rounded bg-white/[0.04] text-zinc-500 font-mono"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+
+                        {/* Category */}
+                        <td className="py-3.5 px-4 text-zinc-400 hidden md:table-cell font-sans">
+                          {problem.category}
+                        </td>
+
+                        {/* Difficulty Badge */}
+                        <td className="py-3.5 px-4">
+                          <span className={`px-2 py-0.5 rounded border text-[11px] font-mono font-medium ${diffColor}`}>
+                            {problem.difficulty}
+                          </span>
+                        </td>
+
+                        {/* Acceptance Rate */}
+                        <td className="py-3.5 px-4 font-mono text-zinc-400 hidden sm:table-cell">
+                          {problem.acceptanceRate}
+                        </td>
+
+                        {/* Optimal Complexity Target */}
+                        <td className="py-3.5 px-4 font-mono text-zinc-400 hidden lg:table-cell text-[11px]">
+                          <span className="text-zinc-300 font-semibold">{problem.timeComplexityOptimal}</span> / {problem.spaceComplexityOptimal}
+                        </td>
+
+                        {/* Action Solve Button with micro-interaction */}
+                        <td className="py-3.5 px-4 text-right">
+                          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+                            <Link
+                              href={`/practice/${problem.slug}`}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-brand-500 hover:text-white text-zinc-300 font-medium text-xs transition-colors border border-white/[0.08] hover:border-brand-500"
                             >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-
-                      {/* Category */}
-                      <td className="py-3.5 px-4 text-zinc-400 hidden md:table-cell font-sans">
-                        {problem.category}
-                      </td>
-
-                      {/* Difficulty Badge */}
-                      <td className="py-3.5 px-4">
-                        <span className={`px-2 py-0.5 rounded border text-[11px] font-mono font-medium ${diffColor}`}>
-                          {problem.difficulty}
-                        </span>
-                      </td>
-
-                      {/* Acceptance Rate */}
-                      <td className="py-3.5 px-4 font-mono text-zinc-400 hidden sm:table-cell">
-                        {problem.acceptanceRate}
-                      </td>
-
-                      {/* Optimal Complexity Target */}
-                      <td className="py-3.5 px-4 font-mono text-zinc-400 hidden lg:table-cell text-[11px]">
-                        <span className="text-zinc-300 font-semibold">{problem.timeComplexityOptimal}</span> / {problem.spaceComplexityOptimal}
-                      </td>
-
-                      {/* Action Solve Button */}
-                      <td className="py-3.5 px-4 text-right">
-                        <Link
-                          href={`/practice/${problem.slug}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-brand-500 hover:text-white text-zinc-300 font-medium text-xs transition-colors border border-white/[0.08] hover:border-brand-500"
-                        >
-                          <Play className="w-3 h-3 fill-current" />
-                          <span>Solve</span>
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
+                              <Play className="w-3 h-3 fill-current" />
+                              <span>Solve</span>
+                            </Link>
+                          </motion.div>
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
+                </AnimatePresence>
 
                 {filteredProblems.length === 0 && (
                   <tr>

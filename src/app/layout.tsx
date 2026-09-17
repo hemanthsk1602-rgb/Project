@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { MotionProvider } from '@/components/motion/MotionProvider';
 
 export const metadata: Metadata = {
   title: 'CodeArena — Think. Code. Improve.',
@@ -42,7 +43,9 @@ export default function RootLayout({
       <body className="min-h-screen bg-[#090D16] text-zinc-100 antialiased selection:bg-brand-500/30 selection:text-white">
         <ThemeProvider>
           <AuthProvider>
-            {children}
+            <MotionProvider>
+              {children}
+            </MotionProvider>
             <Toaster 
               position="bottom-right" 
               richColors
