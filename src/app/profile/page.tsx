@@ -7,6 +7,8 @@ import { CURRENT_USER_PROFILE } from '@/data/demo/profile';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
 import { CountUp } from '@/components/motion/CountUp';
+import { Card3D } from '@/components/3d/Card3D';
+import { IsometricCube3D } from '@/components/3d/IsometricCube3D';
 import { 
   MapPin, 
   Github, 
@@ -30,6 +32,15 @@ export default function ProfilePage() {
   };
 
   const xpPercent = (profile.xp / profile.nextLevelXp) * 100;
+
+  const getBadgeGemColor = (tier: string): 'cyan' | 'amber' | 'brand' | 'rose' => {
+    switch (tier) {
+      case 'diamond': return 'cyan';
+      case 'gold': return 'amber';
+      case 'silver': return 'brand';
+      default: return 'rose';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#090D16] text-zinc-100 flex flex-col">
@@ -59,8 +70,9 @@ export default function ProfilePage() {
                   <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-sans">
                     {profile.name}
                   </h1>
-                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/40 font-mono font-semibold">
-                    LEVEL {profile.level}
+                  <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/40 font-mono font-semibold">
+                    <IsometricCube3D size={12} color="brand" />
+                    <span>LEVEL {profile.level}</span>
                   </span>
                   <span className="text-xs text-zinc-500 font-mono">
                     @{profile.handle}
@@ -134,70 +146,78 @@ export default function ProfilePage() {
           </div>
         </motion.div>
 
-        {/* Stats Quad */}
+        {/* Stats Quad with 3D Spatial Depth */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="p-4 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
-          >
-            <span className="text-xs text-zinc-500 font-mono">Problems Solved</span>
-            <div className="text-2xl font-bold font-mono text-white">
-              <CountUp value={profile.solvedStats.total} duration={1.1} />
-            </div>
-            <div className="text-[11px] text-zinc-500 font-mono">
-              Easy {profile.solvedStats.easy} • Med {profile.solvedStats.medium} • Hard {profile.solvedStats.hard}
-            </div>
-          </motion.div>
+          <Card3D depth={8} glare={true} className="h-full">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="p-4 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1 h-full flex flex-col justify-between"
+            >
+              <span className="text-xs text-zinc-500 font-mono">Problems Solved</span>
+              <div className="text-2xl font-bold font-mono text-white">
+                <CountUp value={profile.solvedStats.total} duration={1.1} />
+              </div>
+              <div className="text-[11px] text-zinc-500 font-mono">
+                Easy {profile.solvedStats.easy} • Med {profile.solvedStats.medium} • Hard {profile.solvedStats.hard}
+              </div>
+            </motion.div>
+          </Card3D>
 
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.05 }}
-            className="p-4 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
-          >
-            <span className="text-xs text-zinc-500 font-mono">Active Streak</span>
-            <div className="text-2xl font-bold font-mono text-amber-400 flex items-center gap-1.5">
-              <CountUp value={profile.streak} duration={1.1} />
-              <span>Days</span>
-              <Flame className="w-4 h-4 fill-amber-400" />
-            </div>
-            <div className="text-[11px] text-zinc-500 font-mono">
-              Consistent daily practice
-            </div>
-          </motion.div>
+          <Card3D depth={8} glare={true} className="h-full">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.05 }}
+              className="p-4 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1 h-full flex flex-col justify-between"
+            >
+              <span className="text-xs text-zinc-500 font-mono">Active Streak</span>
+              <div className="text-2xl font-bold font-mono text-amber-400 flex items-center gap-1.5">
+                <CountUp value={profile.streak} duration={1.1} />
+                <span>Days</span>
+                <Flame className="w-4 h-4 fill-amber-400" />
+              </div>
+              <div className="text-[11px] text-zinc-500 font-mono">
+                Consistent daily practice
+              </div>
+            </motion.div>
+          </Card3D>
 
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="p-4 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
-          >
-            <span className="text-xs text-zinc-500 font-mono">Accuracy</span>
-            <div className="text-2xl font-bold font-mono text-emerald-400">
-              <CountUp value={profile.accuracy} suffix="%" decimals={1} duration={1.1} />
-            </div>
-            <div className="text-[11px] text-zinc-500 font-mono">
-              Accepted first-run passes
-            </div>
-          </motion.div>
+          <Card3D depth={8} glare={true} className="h-full">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              className="p-4 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1 h-full flex flex-col justify-between"
+            >
+              <span className="text-xs text-zinc-500 font-mono">Accuracy</span>
+              <div className="text-2xl font-bold font-mono text-emerald-400">
+                <CountUp value={profile.accuracy} suffix="%" decimals={1} duration={1.1} />
+              </div>
+              <div className="text-[11px] text-zinc-500 font-mono">
+                Accepted first-run passes
+              </div>
+            </motion.div>
+          </Card3D>
 
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
-            className="p-4 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
-          >
-            <span className="text-xs text-zinc-500 font-mono">Contest Rating</span>
-            <div className="text-2xl font-bold font-mono text-brand-400 flex items-center gap-1.5">
-              <CountUp value={profile.contestRating} duration={1.1} />
-              <Trophy className="w-4 h-4" />
-            </div>
-            <div className="text-[11px] text-zinc-500 font-mono">
-              Global Rank #{profile.globalRank}
-            </div>
-          </motion.div>
+          <Card3D depth={8} glare={true} className="h-full">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.15 }}
+              className="p-4 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1 h-full flex flex-col justify-between"
+            >
+              <span className="text-xs text-zinc-500 font-mono">Contest Rating</span>
+              <div className="text-2xl font-bold font-mono text-brand-400 flex items-center gap-1.5">
+                <CountUp value={profile.contestRating} duration={1.1} />
+                <Trophy className="w-4 h-4" />
+              </div>
+              <div className="text-[11px] text-zinc-500 font-mono">
+                Global Rank #{profile.globalRank}
+              </div>
+            </motion.div>
+          </Card3D>
         </div>
 
         {/* Language Proficiency & Verified Achievements */}
@@ -251,29 +271,30 @@ export default function ProfilePage() {
                     : 'border-amber-700/40 text-amber-600 bg-amber-900/20';
 
                 return (
-                  <motion.div
-                    key={badge.id}
-                    whileHover={{ y: -3, scale: 1.02 }}
-                    transition={{ duration: 0.18 }}
-                    className="p-3.5 rounded-lg bg-[#070A13] border border-white/[0.06] flex items-start gap-3 transition-colors hover:border-white/[0.14] cursor-default"
-                  >
-                    <div className={`p-2 rounded-lg border shrink-0 ${tierColor}`}>
-                      <Award className="w-4 h-4" />
-                    </div>
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-white font-sans">
-                          {badge.title}
-                        </span>
-                        <span className="text-[9px] uppercase font-mono px-1 rounded bg-white/[0.05] text-zinc-400">
-                          {badge.tier}
-                        </span>
+                  <Card3D key={badge.id} depth={6} glare={true} className="h-full">
+                    <motion.div
+                      whileHover={{ y: -2 }}
+                      transition={{ duration: 0.18 }}
+                      className="p-3.5 rounded-lg bg-[#070A13] border border-white/[0.06] flex items-start gap-3 transition-colors hover:border-white/[0.14] cursor-default h-full"
+                    >
+                      <div className={`p-2 rounded-lg border shrink-0 ${tierColor} flex items-center justify-center`}>
+                        <IsometricCube3D size={16} color={getBadgeGemColor(badge.tier)} />
                       </div>
-                      <p className="text-[11px] text-zinc-400 leading-tight">
-                        {badge.description}
-                      </p>
-                    </div>
-                  </motion.div>
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-white font-sans">
+                            {badge.title}
+                          </span>
+                          <span className="text-[9px] uppercase font-mono px-1 rounded bg-white/[0.05] text-zinc-400">
+                            {badge.tier}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-zinc-400 leading-tight">
+                          {badge.description}
+                        </p>
+                      </div>
+                    </motion.div>
+                  </Card3D>
                 );
               })}
             </div>

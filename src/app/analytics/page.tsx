@@ -14,6 +14,8 @@ import {
   ArrowRight, 
   Calendar 
 } from 'lucide-react';
+import { Card3D } from '@/components/3d/Card3D';
+import { IsometricCube3D } from '@/components/3d/IsometricCube3D';
 
 export default function AnalyticsPage() {
   const profile = CURRENT_USER_PROFILE;
@@ -36,8 +38,8 @@ export default function AnalyticsPage() {
         {/* Report Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-mono mb-2">
-              <BarChart3 className="w-3 h-3" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-mono mb-2">
+              <IsometricCube3D size={15} color="brand" />
               <span>Performance Analytics</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-sans">
@@ -55,68 +57,56 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        {/* Top Key Metrics Row */}
+        {/* Top Key Metrics Row with 3D Spatial Physics */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
-          >
-            <span className="text-xs text-zinc-400 font-mono">Problems Solved</span>
-            <div className="text-3xl font-bold font-mono text-white">
-              <CountUp value={profile.solvedStats.total} duration={1.1} />
+          <Card3D depth={8} glare={true}>
+            <div className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1 h-full">
+              <span className="text-xs text-zinc-400 font-mono">Problems Solved</span>
+              <div className="text-3xl font-bold font-mono text-white">
+                <CountUp value={profile.solvedStats.total} duration={1.1} />
+              </div>
+              <div className="text-[11px] text-zinc-500 font-mono">
+                Top 6% across platform
+              </div>
             </div>
-            <div className="text-[11px] text-zinc-500 font-mono">
-              Top 6% across platform
-            </div>
-          </motion.div>
+          </Card3D>
 
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.05 }}
-            className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
-          >
-            <span className="text-xs text-zinc-400 font-mono">First-Pass Accuracy</span>
-            <div className="text-3xl font-bold font-mono text-emerald-400">
-              <CountUp value={profile.accuracy} suffix="%" decimals={1} duration={1.1} />
+          <Card3D depth={8} glare={true}>
+            <div className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1 h-full">
+              <span className="text-xs text-zinc-400 font-mono">First-Pass Accuracy</span>
+              <div className="text-3xl font-bold font-mono text-emerald-400">
+                <CountUp value={profile.accuracy} suffix="%" decimals={1} duration={1.1} />
+              </div>
+              <div className="text-[11px] text-zinc-500 font-mono">
+                +4.2% from previous month
+              </div>
             </div>
-            <div className="text-[11px] text-zinc-500 font-mono">
-              +4.2% from previous month
-            </div>
-          </motion.div>
+          </Card3D>
 
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
-          >
-            <span className="text-xs text-zinc-400 font-mono">Average Solve Time</span>
-            <div className="text-3xl font-bold font-mono text-brand-400">
-              <CountUp value={18.5} suffix="m" decimals={1} duration={1.1} />
+          <Card3D depth={8} glare={true}>
+            <div className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1 h-full">
+              <span className="text-xs text-zinc-400 font-mono">Average Solve Time</span>
+              <div className="text-3xl font-bold font-mono text-brand-400">
+                <CountUp value={18.5} suffix="m" decimals={1} duration={1.1} />
+              </div>
+              <div className="text-[11px] text-zinc-500 font-mono">
+                Medium difficulty benchmark
+              </div>
             </div>
-            <div className="text-[11px] text-zinc-500 font-mono">
-              Medium difficulty benchmark
-            </div>
-          </motion.div>
+          </Card3D>
 
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
-            className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1"
-          >
-            <span className="text-xs text-zinc-400 font-mono">Consecutive Streak</span>
-            <div className="text-3xl font-bold font-mono text-amber-400 flex items-center gap-1.5">
-              <CountUp value={profile.streak} duration={1.1} />
-              <Flame className="w-5 h-5 fill-amber-400" />
+          <Card3D depth={8} glare={true}>
+            <div className="p-5 rounded-xl bg-[#0A0E18] border border-white/[0.08] space-y-1 h-full">
+              <span className="text-xs text-zinc-400 font-mono">Consecutive Streak</span>
+              <div className="text-3xl font-bold font-mono text-amber-400 flex items-center gap-1.5">
+                <CountUp value={profile.streak} duration={1.1} />
+                <Flame className="w-5 h-5 fill-amber-400" />
+              </div>
+              <div className="text-[11px] text-zinc-500 font-mono">
+                Active daily problem solver
+              </div>
             </div>
-            <div className="text-[11px] text-zinc-500 font-mono">
-              Active daily problem solver
-            </div>
-          </motion.div>
+          </Card3D>
         </div>
 
         {/* Section 1: Difficulty Distribution & Language Proficiency */}

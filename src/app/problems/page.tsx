@@ -152,8 +152,8 @@ export default function ProblemsPage() {
                   onClick={() => setSelectedDifficulty(diff)}
                   className={`relative px-3 py-1 rounded text-xs font-medium transition-colors ${
                     selectedDifficulty === diff
-                      ? 'text-white font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'text-zinc-900 dark:text-white font-semibold'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                   }`}
                 >
                   {selectedDifficulty === diff && (
@@ -173,11 +173,11 @@ export default function ProblemsPage() {
                   )}
                   <span className={`relative z-10 ${
                     selectedDifficulty === diff && diff === 'Easy'
-                      ? 'text-emerald-400'
+                      ? 'text-emerald-500 dark:text-emerald-400'
                       : selectedDifficulty === diff && diff === 'Medium'
-                      ? 'text-amber-400'
+                      ? 'text-amber-500 dark:text-amber-400'
                       : selectedDifficulty === diff && diff === 'Hard'
-                      ? 'text-rose-400'
+                      ? 'text-rose-500 dark:text-rose-400'
                       : ''
                   }`}>
                     {diff}
@@ -194,8 +194,8 @@ export default function ProblemsPage() {
                   onClick={() => setStatusFilter(st)}
                   className={`relative px-3 py-1 rounded text-xs capitalize transition-colors ${
                     statusFilter === st
-                      ? 'text-white font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'text-zinc-900 dark:text-white font-semibold'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                   }`}
                 >
                   {statusFilter === st && (
@@ -219,8 +219,8 @@ export default function ProblemsPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`relative px-3 py-1 rounded-full text-xs whitespace-nowrap transition-colors border ${
                   selectedCategory === cat
-                    ? 'border-brand-500/40 text-brand-300 font-medium'
-                    : 'bg-white/[0.02] text-zinc-400 border-white/[0.06] hover:bg-white/[0.05] hover:text-zinc-200'
+                    ? 'border-brand-500/40 text-brand-600 dark:text-brand-300 font-medium'
+                    : 'bg-white/[0.02] text-zinc-600 dark:text-zinc-400 border-white/[0.06] hover:bg-white/[0.05] hover:text-zinc-900 dark:hover:text-zinc-200'
                 }`}
               >
                 {selectedCategory === cat && (

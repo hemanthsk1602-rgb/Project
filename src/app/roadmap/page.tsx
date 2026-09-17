@@ -2,11 +2,19 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { DEMO_ROADMAP_TOPICS } from '@/data/demo/roadmap';
 import { RoadmapTopic } from '@/lib/types';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
+import { Card3D } from '@/components/3d/Card3D';
+import { IsometricCube3D } from '@/components/3d/IsometricCube3D';
+
+const SkillGalaxy3D = dynamic(
+  () => import('@/components/3d/SkillGalaxy3D').then((mod) => mod.SkillGalaxy3D),
+  { ssr: false }
+);
 import { 
   CheckCircle2, 
   Lock, 
@@ -37,7 +45,7 @@ const nodeVariants: Variants = {
 
 export default function RoadmapPage() {
   const [selectedTopic, setSelectedTopic] = useState<RoadmapTopic>(DEMO_ROADMAP_TOPICS[1]);
-  const [viewMode, setViewMode] = useState<'tree' | 'grid'>('tree');
+  const [viewMode, setViewMode] = useState<'tree' | 'grid' | '3d'>('tree');
 
   // Interactive DAG Nodes arranged in logical dependency order
   const dagNodes = [
@@ -103,8 +111,8 @@ export default function RoadmapPage() {
         {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.03] border border-white/[0.08] text-zinc-400 text-xs font-mono mb-2">
-              <GitBranch className="w-3 h-3 text-brand-400" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-mono mb-2">
+              <IsometricCube3D size={14} color="brand" />
               <span>Interactive Skill Tree</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-sans">
@@ -148,6 +156,22 @@ export default function RoadmapPage() {
                 )}
                 Module Grid
               </button>
+              <button
+                onClick={() => setViewMode('3d')}
+                className={`relative px-3 py-1.5 rounded-lg transition-colors z-10 flex items-center gap-1.5 ${
+                  viewMode === '3d' ? 'text-white font-semibold' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {viewMode === '3d' && (
+                  <motion.div
+                    layoutId="roadmap-view-pill"
+                    className="absolute inset-0 bg-brand-500/20 border border-brand-500/30 rounded-lg -z-10"
+                    transition={{ type: 'spring', bounce: 0.2, duration: 0.35 }}
+                  />
+                )}
+                <Sparkles className="w-3 h-3 text-brand-400" />
+                <span>3D Galaxy</span>
+              </button>
             </div>
 
             <div className="hidden sm:flex items-center gap-2 bg-[#0C111C] border border-white/[0.08] px-3.5 py-2 rounded-xl text-xs font-mono">
@@ -162,7 +186,22 @@ export default function RoadmapPage() {
           {/* Left: Skill Tree Visualization */}
           <div className="lg:col-span-8">
             <AnimatePresence mode="wait">
-              {viewMode === 'tree' ? (
+              {viewMode === '3d' ? (
+                <motion.div
+                  key="3d"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.25 }}
+                  className="w-full"
+                >
+                  <SkillGalaxy3D
+                    topics={DEMO_ROADMAP_TOPICS}
+                    selectedTopicId={selectedTopic.id}
+                    onSelectTopic={(t) => setSelectedTopic(t)}
+                  />
+                </motion.div>
+              ) : viewMode === 'tree' ? (
                 <motion.div
                   key="tree"
                   initial={{ opacity: 0, y: 10 }}
@@ -412,32 +451,36 @@ export default function RoadmapPage() {
 
           {/* Right: Selected Module Details & Problems Drawer */}
           <div className="lg:col-span-4 sticky top-24">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selectedTopic.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                className="p-6 rounded-2xl bg-[#080C14] border border-white/[0.09] space-y-6 shadow-2xl relative overflow-hidden"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-brand-400 font-semibold">
-                      Curriculum Module
-                    </span>
-                    <span
-                      className={`text-[10px] font-mono px-2 py-0.5 rounded border capitalize ${
-                        selectedTopic.status === 'completed'
-                          ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
-                          : selectedTopic.status === 'in-progress'
-                          ? 'text-brand-400 border-brand-500/30 bg-brand-500/10'
-                          : 'text-zinc-500 border-zinc-700 bg-zinc-800'
-                      }`}
-                    >
-                      {selectedTopic.status}
-                    </span>
-                  </div>
+            <Card3D depth={8} glare={true}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedTopic.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                  className="p-6 rounded-2xl bg-[#080C14] border border-white/[0.09] space-y-6 shadow-2xl relative overflow-hidden"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <IsometricCube3D size={12} color="brand" />
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-brand-400 font-semibold">
+                          Curriculum Module
+                        </span>
+                      </div>
+                      <span
+                        className={`text-[10px] font-mono px-2 py-0.5 rounded border capitalize ${
+                          selectedTopic.status === 'completed'
+                            ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
+                            : selectedTopic.status === 'in-progress'
+                            ? 'text-brand-400 border-brand-500/30 bg-brand-500/10'
+                            : 'text-zinc-500 border-zinc-700 bg-zinc-800'
+                        }`}
+                      >
+                        {selectedTopic.status}
+                      </span>
+                    </div>
                   <h2 className="text-lg font-bold text-white font-mono">
                     {selectedTopic.title}
                   </h2>
@@ -518,7 +561,8 @@ export default function RoadmapPage() {
                 </div>
               </motion.div>
             </AnimatePresence>
-          </div>
+          </Card3D>
+        </div>
         </div>
       </main>
 

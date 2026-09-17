@@ -19,6 +19,8 @@ import {
   Minus
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Card3D } from '@/components/3d/Card3D';
+import { IsometricCube3D } from '@/components/3d/IsometricCube3D';
 
 export default function ArenaPage() {
   // Live Contest Countdown Timer Simulation
@@ -86,8 +88,8 @@ export default function ArenaPage() {
             {/* Contest Info */}
             <div className="space-y-3 max-w-2xl">
               <div className="flex items-center gap-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-mono font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-mono font-semibold">
+                  <IsometricCube3D size={15} color="rose" />
                   LIVE RATED CONTEST
                 </span>
                 <span className="text-xs text-zinc-400 font-mono">
@@ -193,65 +195,65 @@ export default function ArenaPage() {
               const isAttempted = problem.status === 'attempted';
 
               return (
-                <motion.div
-                  key={problem.id}
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: idx * 0.06 }}
-                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                  className={`p-5 rounded-xl border flex flex-col justify-between transition-colors ${
-                    isSolved
-                      ? 'bg-[#0A121F] border-emerald-500/30 shadow-sm'
-                      : isAttempted
-                      ? 'bg-[#101422] border-amber-500/30'
-                      : 'bg-[#0A0E18] border-white/[0.08] hover:border-white/[0.16]'
-                  }`}
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-3 text-xs font-mono">
-                      <span className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.08] flex items-center justify-center font-bold text-white text-sm">
-                        {problem.label}
-                      </span>
-                      <span className="font-semibold text-brand-400">
-                        {problem.points} pts
-                      </span>
+                <Card3D key={problem.id} depth={8} glare={true}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: idx * 0.06 }}
+                    className={`p-5 rounded-xl border flex flex-col justify-between transition-colors h-full ${
+                      isSolved
+                        ? 'bg-[#0A121F] border-emerald-500/30 shadow-sm'
+                        : isAttempted
+                        ? 'bg-[#101422] border-amber-500/30'
+                        : 'bg-[#0A0E18] border-white/[0.08] hover:border-white/[0.16]'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3 text-xs font-mono">
+                        <span className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.08] flex items-center justify-center font-bold text-white text-sm">
+                          {problem.label}
+                        </span>
+                        <span className="font-semibold text-brand-400">
+                          {problem.points} pts
+                        </span>
+                      </div>
+
+                      <h3 className="text-sm font-semibold text-white mb-2 line-clamp-2">
+                        {problem.title}
+                      </h3>
+
+                      <div className="flex items-center gap-2 text-xs text-zinc-400 font-mono">
+                        <Users className="w-3.5 h-3.5 text-zinc-500" />
+                        <span>{problem.solvedCount.toLocaleString()} accepted</span>
+                      </div>
                     </div>
 
-                    <h3 className="text-sm font-semibold text-white mb-2 line-clamp-2">
-                      {problem.title}
-                    </h3>
+                    <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                      {isSolved ? (
+                        <span className="flex items-center gap-1 text-xs text-emerald-400 font-mono font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Accepted
+                        </span>
+                      ) : isAttempted ? (
+                        <span className="flex items-center gap-1 text-xs text-amber-400 font-mono font-medium">
+                          <AlertCircle className="w-3.5 h-3.5" /> Attempted
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 text-xs text-zinc-500 font-mono">
+                          <Circle className="w-3.5 h-3.5" /> Unsolved
+                        </span>
+                      )}
 
-                    <div className="flex items-center gap-2 text-xs text-zinc-400 font-mono">
-                      <Users className="w-3.5 h-3.5 text-zinc-500" />
-                      <span>{problem.solvedCount.toLocaleString()} accepted</span>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Link
+                          href={`/practice/${problem.problemSlug}`}
+                          className="px-3 py-1 rounded bg-white/[0.05] hover:bg-brand-500 hover:text-white text-zinc-300 text-xs font-semibold transition-colors font-mono inline-block"
+                        >
+                          Code →
+                        </Link>
+                      </motion.div>
                     </div>
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                    {isSolved ? (
-                      <span className="flex items-center gap-1 text-xs text-emerald-400 font-mono font-medium">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Accepted
-                      </span>
-                    ) : isAttempted ? (
-                      <span className="flex items-center gap-1 text-xs text-amber-400 font-mono font-medium">
-                        <AlertCircle className="w-3.5 h-3.5" /> Attempted
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-xs text-zinc-500 font-mono">
-                        <Circle className="w-3.5 h-3.5" /> Unsolved
-                      </span>
-                    )}
-
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <Link
-                        href={`/practice/${problem.problemSlug}`}
-                        className="px-3 py-1 rounded bg-white/[0.05] hover:bg-brand-500 hover:text-white text-zinc-300 text-xs font-semibold transition-colors font-mono inline-block"
-                      >
-                        Code →
-                      </Link>
-                    </motion.div>
-                  </div>
-                </motion.div>
+                  </motion.div>
+                </Card3D>
               );
             })}
           </div>

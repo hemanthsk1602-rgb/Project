@@ -13,6 +13,7 @@
     "@monaco-editor/react": "^4.7.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.116.0",
+    "@types/three": "^0.186.0",
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "framer-motion": "^13.2.0",
@@ -24,6 +25,7 @@
     "recharts": "^3.10.1",
     "sonner": "^2.0.8",
     "tailwind-merge": "^2.5.4",
+    "three": "^0.186.0",
     "zod": "^4.6.1"
   },
   "devDependencies": {

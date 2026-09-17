@@ -132,7 +132,7 @@ export function Navbar() {
                 CA
               </motion.div>
               <div className="flex flex-col">
-                <span className="font-bold tracking-tight text-white font-mono text-sm group-hover:text-brand-300 transition-colors">
+                <span className="font-bold tracking-tight text-zinc-900 dark:text-white font-mono text-sm group-hover:text-brand-600 dark:group-hover:text-brand-300 transition-colors">
                   CODEARENA
                 </span>
                 <span className="text-[9px] text-zinc-500 font-mono tracking-widest -mt-0.5">
@@ -150,13 +150,13 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     className={`relative px-3 py-1.5 rounded-md transition-colors ${
-                      isActive ? 'text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
+                      isActive ? 'text-zinc-900 dark:text-white font-semibold' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                     }`}
                   >
                     {isActive && (
                       <motion.div
                         layoutId="navbar-active-pill"
-                        className="absolute inset-0 rounded-md bg-white/[0.08] border border-white/[0.09]"
+                        className="absolute inset-0 rounded-md bg-zinc-200/80 dark:bg-white/[0.08] border border-zinc-300 dark:border-white/[0.09]"
                         transition={{ type: 'spring', stiffness: 450, damping: 35 }}
                       />
                     )}
@@ -176,8 +176,8 @@ export function Navbar() {
                   onClick={() => setAiMenuOpen(!aiMenuOpen)}
                   className={`relative flex items-center gap-1 px-3 py-1.5 rounded-md transition-colors ${
                     isAiActive || aiMenuOpen
-                      ? 'text-white font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'text-zinc-900 dark:text-white font-semibold'
+                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                   }`}
                 >
                   {isAiActive && (
@@ -379,7 +379,7 @@ export function Navbar() {
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Link
                   href="/login"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] hover:bg-white/[0.05] text-xs font-medium text-white transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-300 dark:border-white/[0.1] hover:bg-zinc-100 dark:hover:bg-white/[0.05] text-xs font-medium text-zinc-900 dark:text-white transition-colors"
                 >
                   <LogIn className="w-3.5 h-3.5 text-brand-400" />
                   <span>Sign In</span>

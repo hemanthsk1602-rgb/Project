@@ -21,6 +21,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { Card3D } from '@/components/3d/Card3D';
+import { IsometricCube3D } from '@/components/3d/IsometricCube3D';
+import { PerspectiveGrid3D } from '@/components/3d/PerspectiveGrid3D';
 import { toast } from 'sonner';
 
 function LoginFormContent() {
@@ -133,18 +136,18 @@ function LoginFormContent() {
       </header>
 
       {/* Main Authentication Grid */}
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-10">
-        <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-10 relative overflow-hidden">
+        <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           {/* Left Column: Platform Showcase (Hidden on small screens) */}
           <div className="hidden lg:flex lg:col-span-6 flex-col justify-center space-y-6 pr-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-mono w-fit">
-              <Sparkles className="w-3.5 h-3.5" />
+              <IsometricCube3D size={14} color="brand" />
               <span>ENGINEERING WORKSTATION V2</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
               Train like a competitive programmer. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-indigo-200">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600 dark:from-brand-400 dark:to-indigo-200">
                 Execute like a senior engineer.
               </span>
             </h1>
@@ -154,31 +157,33 @@ function LoginFormContent() {
             </p>
 
             {/* Live Telemetry Code Mockup */}
-            <div className="rounded-xl bg-[#0B0F19] border border-white/[0.08] p-4 shadow-xl space-y-3">
-              <div className="flex items-center justify-between border-b border-white/[0.06] pb-2.5 text-xs text-zinc-400 font-mono">
-                <span className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>runtime_telemetry.cpp</span>
-                </span>
-                <span className="text-emerald-400 font-medium">98.4% Percentile</span>
-              </div>
+            <Card3D depth={6} glare={true}>
+              <div className="rounded-xl bg-[#0B0F19] border border-white/[0.08] p-4 shadow-xl space-y-3">
+                <div className="flex items-center justify-between border-b border-white/[0.06] pb-2.5 text-xs text-zinc-400 font-mono">
+                  <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>runtime_telemetry.cpp</span>
+                  </span>
+                  <span className="text-emerald-400 font-medium">98.4% Percentile</span>
+                </div>
 
-              <div className="font-mono text-xs space-y-1 text-zinc-300">
-                <div className="text-zinc-500">{'// Hash map lookup: O(1) constant time'}</div>
-                <div><span className="text-brand-400">unordered_map</span>&lt;int, int&gt; lookup;</div>
-                <div><span className="text-indigo-300">for</span> (int i = 0; i &lt; n; ++i) &#123;</div>
-                <div className="pl-4 text-emerald-400">if (lookup.count(target - nums[i])) return true;</div>
-                <div>&#125;</div>
-              </div>
+                <div className="font-mono text-xs space-y-1 text-zinc-300">
+                  <div className="text-zinc-500">{'// Hash map lookup: O(1) constant time'}</div>
+                  <div><span className="text-brand-400">unordered_map</span>&lt;int, int&gt; lookup;</div>
+                  <div><span className="text-indigo-300">for</span> (int i = 0; i &lt; n; ++i) &#123;</div>
+                  <div className="pl-4 text-emerald-400">if (lookup.count(target - nums[i])) return true;</div>
+                  <div>&#125;</div>
+                </div>
 
-              <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-zinc-400">
-                <span className="flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-brand-400" />
-                  <span>AI Review: Optimal asymptotic bound \(O(n)\)</span>
-                </span>
-                <span className="font-mono text-zinc-500">14ms latency</span>
+                <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-zinc-400">
+                  <span className="flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-brand-400" />
+                    <span>AI Review: Optimal asymptotic bound \(O(n)\)</span>
+                  </span>
+                  <span className="font-mono text-zinc-500">14ms latency</span>
+                </div>
               </div>
-            </div>
+            </Card3D>
 
             {/* Verified Developer Quote */}
             <div className="flex items-center gap-3 pt-2">
@@ -198,7 +203,8 @@ function LoginFormContent() {
 
           {/* Right Column: Authentication Card */}
           <div className="lg:col-span-6 w-full max-w-md mx-auto">
-            <div className="rounded-2xl bg-[#0B0F19] border border-white/[0.08] shadow-2xl p-6 sm:p-8 space-y-6">
+            <Card3D depth={8} glare={true}>
+              <div className="rounded-2xl bg-[#0B0F19] border border-white/[0.08] shadow-2xl p-6 sm:p-8 space-y-6">
               {/* Header */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
@@ -224,8 +230,8 @@ function LoginFormContent() {
                     ⚡
                   </div>
                   <div>
-                    <div className="text-xs font-semibold text-white">Instant Demo Sign-In</div>
-                    <div className="text-[11px] text-zinc-400">Evaluate immediately as @hemanth_dev</div>
+                    <div className="text-xs font-semibold text-zinc-900 dark:text-white">Instant Demo Sign-In</div>
+                    <div className="text-[11px] text-zinc-600 dark:text-zinc-400">Evaluate immediately as @hemanth_dev</div>
                   </div>
                 </div>
                 <button
@@ -242,7 +248,7 @@ function LoginFormContent() {
                 <button
                   type="button"
                   onClick={() => handleOAuth('github')}
-                  className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-white transition-colors"
+                  className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-zinc-800 dark:text-white transition-colors"
                 >
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
@@ -253,7 +259,7 @@ function LoginFormContent() {
                 <button
                   type="button"
                   onClick={() => handleOAuth('google')}
-                  className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-white transition-colors"
+                  className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-zinc-800 dark:text-white transition-colors"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
                     <path
@@ -492,7 +498,13 @@ function LoginFormContent() {
                 <span>Encrypted session • SOC2 Type II compliant sandbox</span>
               </div>
             </div>
+            </Card3D>
           </div>
+        </div>
+
+        {/* Ambient 3D Horizon Grid */}
+        <div className="absolute bottom-0 left-0 right-0 h-44 pointer-events-none opacity-30 overflow-hidden -z-0">
+          <PerspectiveGrid3D />
         </div>
       </main>
 

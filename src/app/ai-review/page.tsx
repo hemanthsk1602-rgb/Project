@@ -2,11 +2,19 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
 import { CodeLanguage, AIReviewResult } from '@/lib/types';
 import { analyzeCodeLocally } from '@/lib/ai/review-engine';
+import { Card3D } from '@/components/3d/Card3D';
+import { IsometricCube3D } from '@/components/3d/IsometricCube3D';
+
+const ComplexitySurface3D = dynamic(
+  () => import('@/components/3d/ComplexitySurface3D').then((mod) => mod.ComplexitySurface3D),
+  { ssr: false }
+);
 import { 
   Sparkles, 
   Play, 
@@ -150,8 +158,8 @@ public:
         {/* Workspace Title & Presets */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-mono mb-2">
-              <Sparkles className="w-3 h-3" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-mono mb-2">
+              <IsometricCube3D size={14} color="brand" />
               <span>Algorithmic Code Intelligence</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-sans">
@@ -322,45 +330,47 @@ public:
                   transition={{ duration: 0.3 }}
                   className="space-y-5"
                 >
-                  {/* Top Score & Verdict Card with Stagger */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35 }}
-                    className="p-4 rounded-xl bg-[#070B13] border border-white/[0.08] flex items-center justify-between"
-                  >
-                    <div>
-                      <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500">
-                        Overall Engineering Score
-                      </span>
-                      <div className="text-3xl font-bold font-mono text-white flex items-baseline gap-1 mt-0.5">
-                        <span>{result.score}</span>
-                        <span className="text-xs text-zinc-500 font-normal">/ 100</span>
+                  {/* Top Score & Verdict Card with 3D Tilt */}
+                  <Card3D depth={8} glare={true}>
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35 }}
+                      className="p-4 rounded-xl bg-[#070B13] border border-white/[0.08] flex items-center justify-between"
+                    >
+                      <div>
+                        <span className="text-[10px] uppercase font-mono tracking-wider text-zinc-500">
+                          Overall Engineering Score
+                        </span>
+                        <div className="text-3xl font-bold font-mono text-white flex items-baseline gap-1 mt-0.5">
+                          <span>{result.score}</span>
+                          <span className="text-xs text-zinc-500 font-normal">/ 100</span>
+                        </div>
+                        <div className="text-xs text-brand-400 font-medium mt-1">
+                          {result.verdict}
+                        </div>
                       </div>
-                      <div className="text-xs text-brand-400 font-medium mt-1">
-                        {result.verdict}
-                      </div>
-                    </div>
 
-                    <div className="space-y-1.5 text-right font-mono text-xs">
-                      <div className="text-zinc-400">
-                        Correctness: <span className="text-white font-semibold">{result.correctnessScore}%</span>
+                      <div className="space-y-1.5 text-right font-mono text-xs">
+                        <div className="text-zinc-400">
+                          Correctness: <span className="text-white font-semibold">{result.correctnessScore}%</span>
+                        </div>
+                        <div className="text-zinc-400">
+                          Edge Cases: <span className="text-white font-semibold">{result.edgeCasesScore}%</span>
+                        </div>
+                        <div className="text-zinc-400">
+                          Readability: <span className="text-white font-semibold">{result.readabilityScore}%</span>
+                        </div>
                       </div>
-                      <div className="text-zinc-400">
-                        Edge Cases: <span className="text-white font-semibold">{result.edgeCasesScore}%</span>
-                      </div>
-                      <div className="text-zinc-400">
-                        Readability: <span className="text-white font-semibold">{result.readabilityScore}%</span>
-                      </div>
-                    </div>
-                  </motion.div>
+                    </motion.div>
+                  </Card3D>
 
                   {/* Asymptotic Complexity Transition */}
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.35, delay: 0.08 }}
-                    className="p-3.5 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2 font-mono text-xs"
+                    className="p-3.5 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-3 font-mono text-xs"
                   >
                     <span className="text-[10px] text-zinc-500 uppercase tracking-wider block font-sans">
                       Asymptotic Transition
@@ -385,6 +395,14 @@ public:
                           {result.suggestedComplexity.space} Space
                         </div>
                       </div>
+                    </div>
+
+                    {/* Interactive 3D Complexity Landscape */}
+                    <div className="pt-2">
+                      <ComplexitySurface3D 
+                        currentBigO={result.currentComplexity.time} 
+                        targetBigO={result.suggestedComplexity.time} 
+                      />
                     </div>
                   </motion.div>
 
@@ -438,34 +456,36 @@ public:
                     </div>
                   )}
 
-                  {/* Optimal Refactor with Animation */}
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: 0.24 }}
-                    className="space-y-2 pt-2 border-t border-white/[0.06]"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider font-mono">
-                        Optimal Asymptotic Refactor
-                      </span>
-                      <button
-                        onClick={handleCopyOptimized}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] text-xs text-zinc-300 transition-colors"
-                      >
-                        {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                        <span>{copied ? 'Copied' : 'Copy Solution'}</span>
-                      </button>
-                    </div>
+                  {/* Optimal Refactor with 3D Card Depth */}
+                  <Card3D depth={6} glare={true}>
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, delay: 0.24 }}
+                      className="space-y-2 p-3.5 rounded-xl bg-[#060A14] border border-white/[0.08]"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider font-mono">
+                          Optimal Asymptotic Refactor
+                        </span>
+                        <button
+                          onClick={handleCopyOptimized}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] text-xs text-zinc-300 transition-colors"
+                        >
+                          {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          <span>{copied ? 'Copied' : 'Copy Solution'}</span>
+                        </button>
+                      </div>
 
-                    <div className="p-3 rounded-lg bg-[#04070D] border border-white/[0.07] overflow-x-auto font-mono text-[11px] text-zinc-300 max-h-56 whitespace-pre leading-relaxed">
-                      {result.optimizedCode}
-                    </div>
+                      <div className="p-3 rounded-lg bg-[#04070D] border border-white/[0.07] overflow-x-auto font-mono text-[11px] text-zinc-300 max-h-56 whitespace-pre leading-relaxed">
+                        {result.optimizedCode}
+                      </div>
 
-                    <p className="text-[11px] text-zinc-500 italic">
-                      {result.optimizationRationale}
-                    </p>
-                  </motion.div>
+                      <p className="text-[11px] text-zinc-500 italic">
+                        {result.optimizationRationale}
+                      </p>
+                    </motion.div>
+                  </Card3D>
                 </motion.div>
               ) : (
                 <div className="py-20 text-center text-zinc-500 text-xs">

@@ -334,17 +334,31 @@ html:not(.dark) .group-hover\:text-zinc-200:hover {
 /* Brand / Purple / Indigo Accent */
 html.light .text-brand-400,
 html.light .text-brand-300,
+html.light .text-brand-200,
 html.light .text-violet-400,
+html.light .text-violet-300,
+html.light .text-violet-200,
 html.light .text-indigo-400,
+html.light .text-indigo-300,
+html.light .text-indigo-200,
 html.light .text-purple-400,
+html.light .text-purple-300,
+html.light .text-purple-200,
 html.light .hover\:text-brand-300:hover,
 html.light .group-hover\:text-brand-300:hover,
 html.light .group:hover .group-hover\:text-brand-300,
 html:not(.dark) .text-brand-400,
 html:not(.dark) .text-brand-300,
+html:not(.dark) .text-brand-200,
 html:not(.dark) .text-violet-400,
+html:not(.dark) .text-violet-300,
+html:not(.dark) .text-violet-200,
 html:not(.dark) .text-indigo-400,
+html:not(.dark) .text-indigo-300,
+html:not(.dark) .text-indigo-200,
 html:not(.dark) .text-purple-400,
+html:not(.dark) .text-purple-300,
+html:not(.dark) .text-purple-200,
 html:not(.dark) .hover\:text-brand-300:hover,
 html:not(.dark) .group-hover\:text-brand-300:hover,
 html:not(.dark) .group:hover .group-hover\:text-brand-300 {
@@ -354,44 +368,62 @@ html:not(.dark) .group:hover .group-hover\:text-brand-300 {
 /* Emerald / Green (Accepted, Easy, Solved, High Percentile) */
 html.light .text-emerald-400,
 html.light .text-emerald-300,
+html.light .text-emerald-200,
 html.light .text-green-400,
+html.light .text-green-300,
+html.light .text-green-200,
 html:not(.dark) .text-emerald-400,
 html:not(.dark) .text-emerald-300,
-html:not(.dark) .text-green-400 {
+html:not(.dark) .text-emerald-200,
+html:not(.dark) .text-green-400,
+html:not(.dark) .text-green-300,
+html:not(.dark) .text-green-200 {
   color: #047857 !important;
 }
 
 /* Amber / Yellow (Medium, Streak, Attempted, Ratings, Trophy, Gold) */
 html.light .text-amber-400,
 html.light .text-amber-300,
+html.light .text-amber-200,
 html.light .text-amber-500,
 html.light .text-amber-600,
 html.light .text-yellow-400,
+html.light .text-yellow-500,
 html:not(.dark) .text-amber-400,
 html:not(.dark) .text-amber-300,
+html:not(.dark) .text-amber-200,
 html:not(.dark) .text-amber-500,
 html:not(.dark) .text-amber-600,
-html:not(.dark) .text-yellow-400 {
+html:not(.dark) .text-yellow-400,
+html:not(.dark) .text-yellow-500 {
   color: #B45309 !important;
 }
 
 /* Rose / Red (Hard, Penalty, Live Badge, Error, Bottlenecks) */
 html.light .text-rose-400,
 html.light .text-rose-300,
+html.light .text-rose-200,
 html.light .text-red-400,
+html.light .text-red-500,
 html:not(.dark) .text-rose-400,
 html:not(.dark) .text-rose-300,
-html:not(.dark) .text-red-400 {
+html:not(.dark) .text-rose-200,
+html:not(.dark) .text-red-400,
+html:not(.dark) .text-red-500 {
   color: #BE123C !important;
 }
 
 /* Cyan / Sky (Info, Candidate Master, Memory, Blueprints) */
 html.light .text-cyan-400,
 html.light .text-cyan-300,
+html.light .text-cyan-200,
 html.light .text-sky-400,
+html.light .text-sky-300,
 html:not(.dark) .text-cyan-400,
 html:not(.dark) .text-cyan-300,
-html:not(.dark) .text-sky-400 {
+html:not(.dark) .text-cyan-200,
+html:not(.dark) .text-sky-400,
+html:not(.dark) .text-sky-300 {
   color: #0E7490 !important;
 }
 
@@ -414,82 +446,124 @@ html:not(.dark) .fill-rose-400 {
 }
 
 /* =======================================================
-   LIGHT MODE BADGES, PILLS & STATUS TAGS
+   LIGHT MODE BADGES, PILLS & STATUS TAGS (Vibrant & Legible)
    ======================================================= */
 html.light [class*="bg-emerald-500\/"],
-html:not(.dark) [class*="bg-emerald-500\/"] {
+html.light [class*="bg-emerald-500\/"] > span,
+html.light [class*="bg-emerald-500\/"] > p,
+html:not(.dark) [class*="bg-emerald-500\/"],
+html:not(.dark) [class*="bg-emerald-500\/"] > span,
+html:not(.dark) [class*="bg-emerald-500\/"] > p {
   background-color: #ECFDF5 !important;
   border-color: rgba(5, 150, 105, 0.25) !important;
   color: #047857 !important;
 }
 html.light [class*="bg-amber-500\/"],
+html.light [class*="bg-amber-500\/"] > span,
+html.light [class*="bg-amber-500\/"] > p,
 html.light [class*="bg-amber-900\/"],
+html.light [class*="bg-amber-900\/"] > span,
 html:not(.dark) [class*="bg-amber-500\/"],
-html:not(.dark) [class*="bg-amber-900\/"] {
+html:not(.dark) [class*="bg-amber-500\/"] > span,
+html:not(.dark) [class*="bg-amber-500\/"] > p,
+html:not(.dark) [class*="bg-amber-900\/"],
+html:not(.dark) [class*="bg-amber-900\/"] > span {
   background-color: #FFFBEB !important;
   border-color: rgba(217, 119, 6, 0.25) !important;
   color: #B45309 !important;
 }
 html.light [class*="bg-rose-500\/"],
-html:not(.dark) [class*="bg-rose-500\/"] {
+html.light [class*="bg-rose-500\/"] > span,
+html.light [class*="bg-rose-500\/"] > p,
+html:not(.dark) [class*="bg-rose-500\/"],
+html:not(.dark) [class*="bg-rose-500\/"] > span,
+html:not(.dark) [class*="bg-rose-500\/"] > p {
   background-color: #FFF1F2 !important;
   border-color: rgba(225, 29, 72, 0.25) !important;
   color: #BE123C !important;
 }
-html.light [class*="bg-brand-500\/"],
-html:not(.dark) [class*="bg-brand-500\/"] {
+html.light [class*="bg-brand-500\/"]:not(tr):not(table),
+html.light [class*="bg-brand-500\/"]:not(tr):not(table) > span:not([class~="bg-brand-500"]),
+html.light [class*="bg-brand-500\/"]:not(tr):not(table) > p,
+html:not(.dark) [class*="bg-brand-500\/"]:not(tr):not(table),
+html:not(.dark) [class*="bg-brand-500\/"]:not(tr):not(table) > span:not([class~="bg-brand-500"]),
+html:not(.dark) [class*="bg-brand-500\/"]:not(tr):not(table) > p {
   background-color: #EEF2FF !important;
   border-color: rgba(99, 102, 241, 0.25) !important;
   color: #4F46E5 !important;
 }
 html.light [class*="bg-cyan-500\/"],
-html:not(.dark) [class*="bg-cyan-500\/"] {
+html.light [class*="bg-cyan-500\/"] > span,
+html.light [class*="bg-cyan-500\/"] > p,
+html:not(.dark) [class*="bg-cyan-500\/"],
+html:not(.dark) [class*="bg-cyan-500\/"] > span,
+html:not(.dark) [class*="bg-cyan-500\/"] > p {
   background-color: #ECFEFF !important;
   border-color: rgba(14, 116, 144, 0.25) !important;
   color: #0E7490 !important;
 }
 
 /* =======================================================
-   SOLID BUTTONS & CTAs (Always preserve pure white text/icons)
+   SOLID BUTTONS & CTAs (Strict whole-word classes to preserve white text)
    ======================================================= */
-html.light button[class*="bg-brand-500"],
-html.light button[class*="bg-brand-600"],
-html.light a[class*="bg-brand-500"],
-html.light a[class*="bg-brand-600"],
-html.light [class*="bg-brand-500"] > *,
-html.light [class*="bg-brand-600"] > *,
-html.light [class*="bg-rose-500"] > *,
-html.light [class*="bg-emerald-500"] > *,
-html.light button[class*="bg-brand-"] span,
-html.light a[class*="bg-brand-"] span,
+html.light [class~="bg-brand-500"],
+html.light [class~="bg-brand-600"],
+html.light [class~="bg-brand-500"] > *,
+html.light [class~="bg-brand-600"] > *,
+html.light [class~="bg-rose-500"],
+html.light [class~="bg-rose-600"],
+html.light [class~="bg-rose-500"] > *,
+html.light [class~="bg-rose-600"] > *,
+html.light [class~="bg-emerald-500"],
+html.light [class~="bg-emerald-600"],
+html.light [class~="bg-emerald-500"] > *,
+html.light [class~="bg-emerald-600"] > *,
+html.light button[class~="bg-brand-500"] span,
+html.light button[class~="bg-brand-600"] span,
+html.light a[class~="bg-brand-500"] span,
+html.light a[class~="bg-brand-600"] span,
 html.light .keep-white,
 html.light .keep-white *,
-html:not(.dark) button[class*="bg-brand-500"],
-html:not(.dark) button[class*="bg-brand-600"],
-html:not(.dark) a[class*="bg-brand-500"],
-html:not(.dark) a[class*="bg-brand-600"],
-html:not(.dark) [class*="bg-brand-500"] > *,
-html:not(.dark) [class*="bg-brand-600"] > *,
-html:not(.dark) [class*="bg-rose-500"] > *,
-html:not(.dark) [class*="bg-emerald-500"] > *,
-html:not(.dark) button[class*="bg-brand-"] span,
-html:not(.dark) a[class*="bg-brand-"] span,
+html:not(.dark) [class~="bg-brand-500"],
+html:not(.dark) [class~="bg-brand-600"],
+html:not(.dark) [class~="bg-brand-500"] > *,
+html:not(.dark) [class~="bg-brand-600"] > *,
+html:not(.dark) [class~="bg-rose-500"],
+html:not(.dark) [class~="bg-rose-600"],
+html:not(.dark) [class~="bg-rose-500"] > *,
+html:not(.dark) [class~="bg-rose-600"] > *,
+html:not(.dark) [class~="bg-emerald-500"],
+html:not(.dark) [class~="bg-emerald-600"],
+html:not(.dark) [class~="bg-emerald-500"] > *,
+html:not(.dark) [class~="bg-emerald-600"] > *,
+html:not(.dark) button[class~="bg-brand-500"] span,
+html:not(.dark) button[class~="bg-brand-600"] span,
+html:not(.dark) a[class~="bg-brand-500"] span,
+html:not(.dark) a[class~="bg-brand-600"] span,
 html:not(.dark) .keep-white,
 html:not(.dark) .keep-white * {
   color: #FFFFFF !important;
 }
 
-html.light [class*="bg-brand-500"] svg,
-html.light [class*="bg-brand-600"] svg,
-html:not(.dark) [class*="bg-brand-500"] svg,
-html:not(.dark) [class*="bg-brand-600"] svg {
+html.light [class~="bg-brand-500"] svg,
+html.light [class~="bg-brand-600"] svg,
+html.light [class~="bg-emerald-500"] svg,
+html.light [class~="bg-emerald-600"] svg,
+html.light [class~="bg-rose-500"] svg,
+html.light [class~="bg-rose-600"] svg,
+html:not(.dark) [class~="bg-brand-500"] svg,
+html:not(.dark) [class~="bg-brand-600"] svg,
+html:not(.dark) [class~="bg-emerald-500"] svg,
+html:not(.dark) [class~="bg-emerald-600"] svg,
+html:not(.dark) [class~="bg-rose-500"] svg,
+html:not(.dark) [class~="bg-rose-600"] svg {
   stroke: #FFFFFF !important;
 }
 
-html.light [class*="bg-brand-500"] .fill-white,
-html.light [class*="bg-brand-600"] .fill-white,
-html:not(.dark) [class*="bg-brand-500"] .fill-white,
-html:not(.dark) [class*="bg-brand-600"] .fill-white {
+html.light [class~="bg-brand-500"] .fill-white,
+html.light [class~="bg-brand-600"] .fill-white,
+html:not(.dark) [class~="bg-brand-500"] .fill-white,
+html:not(.dark) [class~="bg-brand-600"] .fill-white {
   fill: #FFFFFF !important;
 }
 
@@ -521,6 +595,11 @@ html:not(.dark) select {
   border-color: #CBD5E1 !important;
   color: #0F172A !important;
 }
+html.light input.bg-transparent,
+html:not(.dark) input.bg-transparent {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
 html.light select option,
 html:not(.dark) select option {
   background-color: #FFFFFF !important;
@@ -543,10 +622,35 @@ html:not(.dark) [class*="hover\:bg-white\/"]:hover {
   background-color: #E2E8F0 !important;
 }
 
+/* White Opacity Pills & Filter Badges */
+html.light .bg-white\/10,
+html.light .bg-white\/15,
+html.light .bg-white\/20,
+html.light .bg-white\/5,
+html.light [class*="bg-white\/1"],
+html:not(.dark) .bg-white\/10,
+html:not(.dark) .bg-white\/15,
+html:not(.dark) .bg-white\/20,
+html:not(.dark) .bg-white\/5,
+html:not(.dark) [class*="bg-white\/1"] {
+  background-color: #E2E8F0 !important;
+  border-color: #CBD5E1 !important;
+}
+
 /* Highlighted Table Rows */
+html.light tr[class*="bg-brand-500\/"],
+html:not(.dark) tr[class*="bg-brand-500\/"],
 html.light .bg-brand-500\/10,
 html:not(.dark) .bg-brand-500\/10 {
   background-color: #EEF2FF !important;
+}
+html.light tr[class*="bg-brand-500\/"] td,
+html:not(.dark) tr[class*="bg-brand-500\/"] td {
+  background-color: transparent !important;
+}
+html.light tr[class*="bg-brand-500\/"] .text-zinc-200,
+html:not(.dark) tr[class*="bg-brand-500\/"] .text-zinc-200 {
+  color: #0F172A !important;
 }
 
 /* Card Elevation & Refined Borders */
@@ -557,11 +661,20 @@ html:not(.dark) .rounded-2xl.border {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
 }
 
-/* Neutral Tags & Pills */
+/* Neutral Tags, Pills & Secondary Buttons */
 html.light .bg-zinc-800,
-html:not(.dark) .bg-zinc-800 {
+html.light .bg-zinc-900,
+html.light [class*="bg-zinc-800"],
+html:not(.dark) .bg-zinc-800,
+html:not(.dark) .bg-zinc-900,
+html:not(.dark) [class*="bg-zinc-800"] {
   background-color: #E2E8F0 !important;
-  color: #334155 !important;
+  color: #1E293B !important;
+}
+html.light [class*="hover\:bg-zinc-700"]:hover,
+html:not(.dark) [class*="hover\:bg-zinc-700"]:hover {
+  background-color: #CBD5E1 !important;
+  color: #0F172A !important;
 }
 
 html.light kbd,
@@ -622,6 +735,35 @@ html:not(.dark) kbd {
 
 .interactive-hover:active {
   transform: scale(0.98);
+}
+
+/* 3D Spatial Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-2000 {
+  perspective: 2000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.translate-z-10 {
+  transform: translateZ(10px);
+}
+
+.translate-z-20 {
+  transform: translateZ(20px);
+}
+
+.translate-z-30 {
+  transform: translateZ(30px);
 }
 
 /* Reduced Motion Accessibility */

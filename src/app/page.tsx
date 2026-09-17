@@ -26,8 +26,15 @@ import {
   ArrowUpRight,
   AlertTriangle
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
+import { Card3D } from '@/components/3d/Card3D';
+import { PerspectiveGrid3D } from '@/components/3d/PerspectiveGrid3D';
+import { IsometricCube3D } from '@/components/3d/IsometricCube3D';
+
+const Hero3DScene = dynamic(() => import('@/components/3d/Hero3DScene').then(mod => mod.Hero3DScene), { ssr: false });
+const AlgorithmGraph3D = dynamic(() => import('@/components/3d/AlgorithmGraph3D').then(mod => mod.AlgorithmGraph3D), { ssr: false });
 
 export default function HomePage() {
   const [activeCodeLang, setActiveCodeLang] = useState<'cpp' | 'python'>('cpp');
@@ -77,11 +84,14 @@ export default function HomePage() {
             SECTION 1: CINEMATIC HERO (Expanded Whitespace & Breathing Room)
            ========================================================================= */}
         <section className="relative pt-16 pb-28 lg:pt-24 lg:pb-36 border-b border-white/[0.06] overflow-hidden">
+          {/* Hardware-Accelerated 3D WebGL Scene */}
+          <Hero3DScene />
+
           {/* Animated Background Grid Pattern */}
-          <div className="absolute inset-0 bg-grid-pattern animate-grid-drift opacity-30 pointer-events-none" />
+          <div className="absolute inset-0 bg-grid-pattern animate-grid-drift opacity-25 pointer-events-none" />
 
           {/* Subtle Ambient Radial Glow — Moving gently */}
-          <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-brand-500/[0.06] blur-[140px] pointer-events-none rounded-full animate-glow-drift" />
+          <div className="absolute top-12 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-brand-500/[0.08] blur-[140px] pointer-events-none rounded-full animate-glow-drift" />
 
           {/* Floating subtle data point chips */}
           <div className="hidden lg:block absolute top-20 right-16 px-2.5 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-[10px] font-mono text-brand-300 animate-float-slow select-none">
@@ -100,10 +110,10 @@ export default function HomePage() {
                 transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
                 className="lg:col-span-6 space-y-8"
               >
-                {/* Product Badge */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-zinc-400 text-xs font-mono">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse" />
-                  <span>Developer Practice & Intelligence</span>
+                {/* 3D Interactive Product Badge */}
+                <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] text-zinc-300 text-xs font-mono shadow-sm">
+                  <IsometricCube3D size={16} color="brand" />
+                  <span>Developer Practice & 3D Intelligence</span>
                 </div>
 
                 {/* Main Headline with Smooth Line Reveal */}
@@ -111,7 +121,7 @@ export default function HomePage() {
                   <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.08] font-sans">
                     MASTER YOUR <br />
                     PROBLEM <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-100 via-brand-200 to-indigo-300">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-indigo-600 to-violet-700 dark:from-zinc-100 dark:via-brand-200 dark:to-indigo-300">
                       SOLVING.
                     </span>
                   </h1>
@@ -160,96 +170,98 @@ export default function HomePage() {
                 </div>
               </motion.div>
 
-              {/* Right Column: Refined Hero Code Editor Window with Motion */}
+              {/* Right Column: Refined Hero Code Editor Window with 3D Spatial Physics */}
               <motion.div 
                 initial={{ opacity: 0, x: 24 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.65, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
                 className="lg:col-span-6"
               >
-                <div className="rounded-xl bg-[#080C14] border border-white/[0.1] shadow-2xl overflow-hidden hover:border-white/[0.16] transition-colors">
-                  {/* Editor Window Bar */}
-                  <div className="h-10 bg-[#060910] border-b border-white/[0.07] px-4 flex items-center justify-between select-none">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-700/80" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-700/80" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-zinc-700/80" />
+                <Card3D depth={8} glare={true}>
+                  <div className="rounded-xl bg-[#080C14] border border-white/[0.1] shadow-2xl overflow-hidden hover:border-white/[0.16] transition-colors">
+                    {/* Editor Window Bar */}
+                    <div className="h-10 bg-[#060910] border-b border-white/[0.07] px-4 flex items-center justify-between select-none">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-2.5 h-2.5 rounded-full bg-zinc-700/80" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-zinc-700/80" />
+                          <div className="w-2.5 h-2.5 rounded-full bg-zinc-700/80" />
+                        </div>
+                        <span className="text-xs text-zinc-400 font-mono ml-2 font-medium">
+                          two-sum.{activeCodeLang === 'cpp' ? 'cpp' : 'py'}
+                        </span>
                       </div>
-                      <span className="text-xs text-zinc-400 font-mono ml-2 font-medium">
-                        two-sum.{activeCodeLang === 'cpp' ? 'cpp' : 'py'}
-                      </span>
-                    </div>
 
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => setActiveCodeLang('cpp')}
-                        className={`px-2 py-0.5 rounded text-[11px] font-mono transition-colors ${
-                          activeCodeLang === 'cpp'
-                            ? 'bg-white/10 text-white font-medium'
-                            : 'text-zinc-500 hover:text-zinc-300'
-                        }`}
-                      >
-                        C++20
-                      </button>
-                      <button
-                        onClick={() => setActiveCodeLang('python')}
-                        className={`px-2 py-0.5 rounded text-[11px] font-mono transition-colors ${
-                          activeCodeLang === 'python'
-                            ? 'bg-white/10 text-white font-medium'
-                            : 'text-zinc-500 hover:text-zinc-300'
-                        }`}
-                      >
-                        Python 3.12
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Code Editor Body with Progressive Reveal */}
-                  <div className="p-4 font-mono text-[12px] bg-[#080C14] leading-relaxed overflow-x-auto min-h-[320px]">
-                    <div className="space-y-0.5">
-                      {currentLines.map((line, idx) => (
-                        <motion.div 
-                          key={`${activeCodeLang}-${line.num}`}
-                          initial={{ opacity: 0, x: -4 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.2, delay: Math.min(idx * 0.02, 0.3) }}
-                          className="flex items-baseline gap-4 hover:bg-white/[0.03] px-1 rounded transition-colors group"
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => setActiveCodeLang('cpp')}
+                          className={`px-2 py-0.5 rounded text-[11px] font-mono transition-colors ${
+                            activeCodeLang === 'cpp'
+                              ? 'bg-brand-500 text-white font-medium shadow-sm'
+                              : 'text-zinc-500 hover:text-zinc-300 dark:hover:text-zinc-200'
+                          }`}
                         >
-                          <span className="w-6 text-right text-zinc-600 text-[11px] select-none shrink-0 font-mono group-hover:text-zinc-400">
-                            {line.num}
-                          </span>
-                          <span className={`whitespace-pre ${line.color}`}>
-                            {line.text}
-                          </span>
-                        </motion.div>
-                      ))}
+                          C++20
+                        </button>
+                        <button
+                          onClick={() => setActiveCodeLang('python')}
+                          className={`px-2 py-0.5 rounded text-[11px] font-mono transition-colors ${
+                            activeCodeLang === 'python'
+                              ? 'bg-brand-500 text-white font-medium shadow-sm'
+                              : 'text-zinc-500 hover:text-zinc-300 dark:hover:text-zinc-200'
+                          }`}
+                        >
+                          Python 3.12
+                        </button>
+                      </div>
                     </div>
 
-                    {/* Subtle Blinking Cursor */}
-                    <div className="flex items-center gap-4 px-1 mt-1">
-                      <span className="w-6 text-right text-zinc-600 text-[11px] font-mono select-none">
-                        {currentLines.length + 1}
-                      </span>
-                      <span className="inline-block w-1.5 h-4 bg-brand-400 animate-pulse" />
-                    </div>
-                  </div>
+                    {/* Code Editor Body with Progressive Reveal */}
+                    <div className="p-4 font-mono text-[12px] bg-[#080C14] leading-relaxed overflow-x-auto min-h-[320px]">
+                      <div className="space-y-0.5">
+                        {currentLines.map((line, idx) => (
+                          <motion.div 
+                            key={`${activeCodeLang}-${line.num}`}
+                            initial={{ opacity: 0, x: -4 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.2, delay: Math.min(idx * 0.02, 0.3) }}
+                            className="flex items-baseline gap-4 hover:bg-white/[0.03] px-1 rounded transition-colors group"
+                          >
+                            <span className="w-6 text-right text-zinc-600 text-[11px] select-none shrink-0 font-mono group-hover:text-zinc-400">
+                              {line.num}
+                            </span>
+                            <span className={`whitespace-pre ${line.color}`}>
+                              {line.text}
+                            </span>
+                          </motion.div>
+                        ))}
+                      </div>
 
-                  {/* Micro Status Bar */}
-                  <div className="h-7 bg-[#05080E] border-t border-white/[0.06] px-3.5 flex items-center justify-between text-[11px] text-zinc-500 font-mono select-none">
-                    <div className="flex items-center gap-3">
-                      <span className="text-emerald-400 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" />
-                        All 4 Test Cases Passed
-                      </span>
-                      <span className="text-zinc-600">|</span>
-                      <span>Runtime: 4ms</span>
+                      {/* Subtle Blinking Cursor */}
+                      <div className="flex items-center gap-4 px-1 mt-1">
+                        <span className="w-6 text-right text-zinc-600 text-[11px] font-mono select-none">
+                          {currentLines.length + 1}
+                        </span>
+                        <span className="inline-block w-1.5 h-4 bg-brand-400 animate-pulse" />
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 text-zinc-600">
-                      <span>Shift + Alt + F</span>
+
+                    {/* Micro Status Bar */}
+                    <div className="h-7 bg-[#05080E] border-t border-white/[0.06] px-3.5 flex items-center justify-between text-[11px] text-zinc-500 font-mono select-none">
+                      <div className="flex items-center gap-3">
+                        <span className="text-emerald-400 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" />
+                          All 4 Test Cases Passed
+                        </span>
+                        <span className="text-zinc-600">|</span>
+                        <span>Runtime: 4ms</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-zinc-600">
+                        <span>Shift + Alt + F</span>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Card3D>
               </motion.div>
             </div>
           </div>
@@ -622,6 +634,11 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
+
+            {/* Interactive 3D Spatial Data Structure Graph */}
+            <div className="pt-4">
+              <AlgorithmGraph3D />
+            </div>
           </div>
         </section>
 
@@ -716,40 +733,56 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Clean Telemetry Metrics Grid */}
+            {/* 3D Telemetry Metrics Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
-              <div className="p-5 rounded-xl bg-[#080C14] border border-white/[0.08] space-y-1">
-                <span className="text-zinc-500 text-[11px]">Total Solved</span>
-                <div className="text-2xl font-bold text-white">428</div>
-                <div className="text-zinc-500 text-[10px]">Top 6% on platform</div>
-              </div>
+              <Card3D depth={8} glare={true}>
+                <div className="p-5 rounded-xl bg-[#080C14] border border-white/[0.08] space-y-1 h-full">
+                  <span className="text-zinc-500 text-[11px]">Total Solved</span>
+                  <div className="text-2xl font-bold text-white">428</div>
+                  <div className="text-zinc-500 text-[10px]">Top 6% on platform</div>
+                </div>
+              </Card3D>
 
-              <div className="p-5 rounded-xl bg-[#080C14] border border-white/[0.08] space-y-1">
-                <span className="text-zinc-500 text-[11px]">First-Pass Accuracy</span>
-                <div className="text-2xl font-bold text-emerald-400">73.4%</div>
-                <div className="text-zinc-500 text-[10px]">Deterministic test pass</div>
-              </div>
+              <Card3D depth={8} glare={true}>
+                <div className="p-5 rounded-xl bg-[#080C14] border border-white/[0.08] space-y-1 h-full">
+                  <span className="text-zinc-500 text-[11px]">First-Pass Accuracy</span>
+                  <div className="text-2xl font-bold text-emerald-400">73.4%</div>
+                  <div className="text-zinc-500 text-[10px]">Deterministic test pass</div>
+                </div>
+              </Card3D>
 
-              <div className="p-5 rounded-xl bg-[#080C14] border border-white/[0.08] space-y-1">
-                <span className="text-zinc-500 text-[11px]">Average Solve Time</span>
-                <div className="text-2xl font-bold text-brand-400">18.5m</div>
-                <div className="text-zinc-500 text-[10px]">Medium problem pace</div>
-              </div>
+              <Card3D depth={8} glare={true}>
+                <div className="p-5 rounded-xl bg-[#080C14] border border-white/[0.08] space-y-1 h-full">
+                  <span className="text-zinc-500 text-[11px]">Average Solve Time</span>
+                  <div className="text-2xl font-bold text-brand-400">18.5m</div>
+                  <div className="text-zinc-500 text-[10px]">Medium problem pace</div>
+                </div>
+              </Card3D>
 
-              <div className="p-5 rounded-xl bg-[#080C14] border border-white/[0.08] space-y-1">
-                <span className="text-zinc-500 text-[11px]">Active Streak</span>
-                <div className="text-2xl font-bold text-amber-400">87 Days</div>
-                <div className="text-zinc-500 text-[10px]">Consecutive practice</div>
-              </div>
+              <Card3D depth={8} glare={true}>
+                <div className="p-5 rounded-xl bg-[#080C14] border border-white/[0.08] space-y-1 h-full">
+                  <span className="text-zinc-500 text-[11px]">Active Streak</span>
+                  <div className="text-2xl font-bold text-amber-400">87 Days</div>
+                  <div className="text-zinc-500 text-[10px]">Consecutive practice</div>
+                </div>
+              </Card3D>
             </div>
           </div>
         </section>
 
         {/* =========================================================================
-            SECTION 8: FINAL MINIMAL CTA (Open, Powerful & Minimal)
+            SECTION 8: FINAL MINIMAL CTA (3D Perspective Horizon & Floating Geometry)
            ========================================================================= */}
         <section className="py-28 text-center relative overflow-hidden">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          {/* 3D Infinite Perspective Grid */}
+          <PerspectiveGrid3D />
+
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
+            {/* Floating 3D Geometric Crystal */}
+            <div className="flex justify-center mb-1">
+              <IsometricCube3D size={44} color="brand" />
+            </div>
+
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-sans">
               Think. Code. Improve.
             </h2>

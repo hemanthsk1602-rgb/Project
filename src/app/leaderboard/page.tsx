@@ -1,10 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GLOBAL_LEADERBOARD, WEEKLY_LEADERBOARD, COLLEGE_LEADERBOARD } from '@/data/demo/leaderboard';
 import { Navbar } from '@/components/navigation/Navbar';
 import { Footer } from '@/components/navigation/Footer';
+import { Card3D } from '@/components/3d/Card3D';
+import { IsometricCube3D } from '@/components/3d/IsometricCube3D';
+
+const LeaderboardGlobe3D = dynamic(
+  () => import('@/components/3d/LeaderboardGlobe3D').then((mod) => mod.LeaderboardGlobe3D),
+  { ssr: false }
+);
 import { 
   Trophy, 
   Flame, 
@@ -68,8 +76,8 @@ export default function LeaderboardPage() {
         {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/[0.08]">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-mono mb-2">
-              <Trophy className="w-3 h-3" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-mono mb-2">
+              <IsometricCube3D size={14} color="amber" />
               <span>Global Developer Rankings</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-sans">
@@ -81,27 +89,31 @@ export default function LeaderboardPage() {
           </div>
 
           {/* Sticky Current User Standing Quick Card */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="p-3 rounded-xl bg-[#0D1424] border border-brand-500/30 flex items-center gap-4 text-xs font-mono shadow-md"
-          >
-            <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center font-bold text-white text-xs">
-              HS
-            </div>
-            <div>
-              <div className="text-white font-bold flex items-center gap-1.5">
-                <span>Hemanth S (You)</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30">
-                  Expert
-                </span>
-              </div>
-              <div className="text-zinc-400 text-[11px]">
-                Rank <strong className="text-zinc-200">#127</strong> • Rating <strong className="text-emerald-400">2185</strong> • 87d streak
-              </div>
-            </div>
-          </motion.div>
+          <div className="w-full sm:w-auto">
+            <Card3D depth={8} glare={true}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="p-3 rounded-xl bg-[#0D1424] border border-brand-500/30 flex items-center gap-4 text-xs font-mono shadow-md"
+              >
+                <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center font-bold text-white text-xs">
+                  HS
+                </div>
+                <div>
+                  <div className="text-white font-bold flex items-center gap-1.5">
+                    <span>Hemanth S (You)</span>
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30">
+                      Expert
+                    </span>
+                  </div>
+                  <div className="text-zinc-400 text-[11px]">
+                    Rank <strong className="text-zinc-200">#127</strong> • Rating <strong className="text-emerald-400">2185</strong> • 87d streak
+                  </div>
+                </div>
+              </motion.div>
+            </Card3D>
+          </div>
         </div>
 
         {/* Tab Selector & Search Bar */}
@@ -144,96 +156,107 @@ export default function LeaderboardPage() {
           </div>
         </div>
 
-        {/* Podium Top 3 Highlights */}
+        {/* Podium Top 3 Highlights & 3D Competitor Globe */}
         {topThree.length >= 3 && !searchQuery && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-            {/* Rank 2 (Silver) */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.05 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="p-5 rounded-xl bg-[#090E1A] border border-zinc-700/40 space-y-3 flex flex-col justify-between order-2 md:order-1"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-zinc-400 px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700">
-                  RANK #2
-                </span>
-                <Medal className="w-5 h-5 text-zinc-400" />
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-zinc-800 border border-zinc-600 flex items-center justify-center font-bold text-zinc-300 font-mono text-sm shrink-0">
-                  {topThree[1].username.slice(0, 2).toUpperCase()}
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-white">{topThree[1].username}</h3>
-                  <span className="text-xs text-zinc-500 font-mono">@{topThree[1].handle}</span>
-                </div>
-              </div>
-              <div className="pt-2 border-t border-white/[0.05] flex items-center justify-between font-mono text-xs text-zinc-400">
-                <span>Rating: <strong className="text-white">{topThree[1].rating}</strong></span>
-                <span>{topThree[1].solvedCount} Solved</span>
-              </div>
-            </motion.div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch pt-2">
+            {/* Podium Cards */}
+            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Rank 2 (Silver) */}
+              <Card3D depth={10} glare={true} className="h-full">
+                <motion.div
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: 0.05 }}
+                  className="p-5 rounded-xl bg-[#090E1A] border border-zinc-700/40 space-y-3 flex flex-col justify-between h-full"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-bold text-zinc-400 px-2 py-0.5 rounded bg-zinc-800 border border-zinc-700">
+                      RANK #2
+                    </span>
+                    <Medal className="w-5 h-5 text-zinc-400" />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-zinc-800 border border-zinc-600 flex items-center justify-center font-bold text-zinc-300 font-mono text-sm shrink-0">
+                      {topThree[1].username.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-white">{topThree[1].username}</h3>
+                      <span className="text-xs text-zinc-500 font-mono">@{topThree[1].handle}</span>
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-white/[0.05] flex items-center justify-between font-mono text-xs text-zinc-400">
+                    <span>Rating: <strong className="text-white">{topThree[1].rating}</strong></span>
+                    <span>{topThree[1].solvedCount} Solved</span>
+                  </div>
+                </motion.div>
+              </Card3D>
 
-            {/* Rank 1 (Gold) */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="p-5 rounded-xl bg-gradient-to-b from-[#161D2E] to-[#0A0E18] border border-amber-500/40 space-y-3 flex flex-col justify-between order-1 md:order-2 shadow-lg relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-amber-400 px-2 py-0.5 rounded bg-amber-500/15 border border-amber-500/30">
-                  👑 RANK #1
-                </span>
-                <Trophy className="w-5 h-5 text-amber-400" />
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-amber-500/20 border-2 border-amber-400/60 flex items-center justify-center font-extrabold text-amber-300 font-mono text-base shrink-0 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                  {topThree[0].username.slice(0, 2).toUpperCase()}
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">{topThree[0].username}</h3>
-                  <span className="text-xs text-zinc-400 font-mono">@{topThree[0].handle}</span>
-                </div>
-              </div>
-              <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between font-mono text-xs text-zinc-300">
-                <span>Rating: <strong className="text-amber-400 text-sm">{topThree[0].rating}</strong></span>
-                <span>{topThree[0].solvedCount} Solved</span>
-              </div>
-            </motion.div>
+              {/* Rank 1 (Gold) */}
+              <Card3D depth={14} glare={true} className="h-full">
+                <motion.div
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35 }}
+                  className="p-5 rounded-xl bg-gradient-to-b from-[#161D2E] to-[#0A0E18] border border-amber-500/40 space-y-3 flex flex-col justify-between h-full shadow-lg relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-bold text-amber-400 px-2 py-0.5 rounded bg-amber-500/15 border border-amber-500/30">
+                      👑 RANK #1
+                    </span>
+                    <Trophy className="w-5 h-5 text-amber-400" />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-amber-500/20 border-2 border-amber-400/60 flex items-center justify-center font-extrabold text-amber-300 font-mono text-base shrink-0 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                      {topThree[0].username.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white">{topThree[0].username}</h3>
+                      <span className="text-xs text-zinc-400 font-mono">@{topThree[0].handle}</span>
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-white/[0.08] flex items-center justify-between font-mono text-xs text-zinc-300">
+                    <span>Rating: <strong className="text-amber-400 text-sm">{topThree[0].rating}</strong></span>
+                    <span>{topThree[0].solvedCount} Solved</span>
+                  </div>
+                </motion.div>
+              </Card3D>
 
-            {/* Rank 3 (Bronze) */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.1 }}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="p-5 rounded-xl bg-[#090E1A] border border-amber-700/30 space-y-3 flex flex-col justify-between order-3"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-amber-600 px-2 py-0.5 rounded bg-amber-900/30 border border-amber-700/40">
-                  RANK #3
-                </span>
-                <Medal className="w-5 h-5 text-amber-600" />
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-amber-900/30 border border-amber-800 flex items-center justify-center font-bold text-amber-500 font-mono text-sm shrink-0">
-                  {topThree[2].username.slice(0, 2).toUpperCase()}
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-white">{topThree[2].username}</h3>
-                  <span className="text-xs text-zinc-500 font-mono">@{topThree[2].handle}</span>
-                </div>
-              </div>
-              <div className="pt-2 border-t border-white/[0.05] flex items-center justify-between font-mono text-xs text-zinc-400">
-                <span>Rating: <strong className="text-white">{topThree[2].rating}</strong></span>
-                <span>{topThree[2].solvedCount} Solved</span>
-              </div>
-            </motion.div>
+              {/* Rank 3 (Bronze) */}
+              <Card3D depth={10} glare={true} className="h-full">
+                <motion.div
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: 0.1 }}
+                  className="p-5 rounded-xl bg-[#090E1A] border border-amber-700/30 space-y-3 flex flex-col justify-between h-full"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-bold text-amber-600 px-2 py-0.5 rounded bg-amber-900/30 border border-amber-700/40">
+                      RANK #3
+                    </span>
+                    <Medal className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-amber-900/30 border border-amber-800 flex items-center justify-center font-bold text-amber-500 font-mono text-sm shrink-0">
+                      {topThree[2].username.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-white">{topThree[2].username}</h3>
+                      <span className="text-xs text-zinc-500 font-mono">@{topThree[2].handle}</span>
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-white/[0.05] flex items-center justify-between font-mono text-xs text-zinc-400">
+                    <span>Rating: <strong className="text-white">{topThree[2].rating}</strong></span>
+                    <span>{topThree[2].solvedCount} Solved</span>
+                  </div>
+                </motion.div>
+              </Card3D>
+            </div>
+
+            {/* 3D Holographic Leaderboard Globe */}
+            <div className="lg:col-span-4 flex flex-col justify-center">
+              <LeaderboardGlobe3D totalCompetitors={14820} className="h-full min-h-[260px]" />
+            </div>
           </div>
         )}
 
